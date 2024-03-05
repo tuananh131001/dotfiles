@@ -33,7 +33,6 @@ clean_db(){
 rails db:drop db:create db:migrate
 rails db:migrate RAILS_ENV=test
 }
-eval "$(nodenv init -)"
 PROMPT='%{$fg[yellow]%}[%D{%f/%m/%y} %D{%L:%M:%S}] '$PROMPT
 eval "$(starship init zsh)"
 
@@ -51,3 +50,5 @@ export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 export PUPPETEER_EXECUTABLE_PATH=`which chromium`
 export ELASTIC_PASSWORD="xctKaB-GWssm_7mkFFQR"
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+export PATH="$HOME/.nodenv/bin:$PATH"
+export PATH=/Users/$USER/.local/share/bob/nvim-bin:$PATH
