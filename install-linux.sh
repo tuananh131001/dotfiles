@@ -28,3 +28,12 @@ echo "Installing rust apps..."
 cargo install bob-nvim
 bob install stable
 bob use stable
+
+git config --global user.name 'AnhNT'
+git config --global user.email 'tuananh131001@gmail.com'
+git config --global credential.helper
+
+echo "Installing tmux plugin manager..."
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
+git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions

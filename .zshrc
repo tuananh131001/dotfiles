@@ -14,7 +14,6 @@ fi
 # Start rbenv
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
-source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 alias buj="bundle update josys-configurator"
 mi_core()
 {
@@ -51,3 +50,4 @@ esac
 export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 export PUPPETEER_EXECUTABLE_PATH=`which chromium`
 export ELASTIC_PASSWORD="xctKaB-GWssm_7mkFFQR"
+source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
