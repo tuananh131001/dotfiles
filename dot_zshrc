@@ -14,6 +14,7 @@ fi
 # Start rbenv
 export PATH="$HOME/.rbenv/bin:$PATH"
 alias buj="bundle update josys-configurator"
+alias ber="bundle exec rspec"
 mi_core()
 {
 bundle update josys-configurator
@@ -63,3 +64,4 @@ export PATH="/opt/homebrew/opt/mysql@5.7/bin:$PATH"
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 source <(fzf --zsh)
 export HOMEBREW_NO_AUTO_UPDATE=1
+precmd () {print -Pn "\e]0;%~\a"}
