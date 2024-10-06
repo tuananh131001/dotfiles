@@ -5,7 +5,7 @@ return {
 			ruby = { "rubocop" },
 			html = { "prettierhtml" },
 			json = { "jq" },
-			eruby = { "prettierhtml" },
+			eruby = { "erb_format" },
 			javascript = { "biome" },
 			xml = { "xmllint" },
 			lua = { "stylua" },
