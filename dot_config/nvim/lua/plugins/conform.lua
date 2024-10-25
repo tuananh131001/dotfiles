@@ -13,7 +13,7 @@ return {
 		formatters = {
 			rubocop = {
 				options = { ignore_errors = true },
-				args = { "--server", "--auto-correct-all", "--force-exclusion", "--stderr", "--stdin", "$FILENAME" },
+				args = { "--server", "--autocorrect-all", "--force-exclusion", "--stderr", "--stdin", "$FILENAME" },
 			},
 			prettier = {
 				options = {
@@ -26,11 +26,6 @@ return {
 				command = "prettier",
 				args = { "--parser", "html", "--print-width", "200" },
 			},
-		},
-		-- Add format on save
-		format_on_save = {
-			timeout_ms = 3000,
-			lsp_fallback = true,
 		},
 	},
 	config = function(_, opts)
