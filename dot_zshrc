@@ -17,16 +17,33 @@ alias buj="bundle update josys-configurator"
 alias ber="bundle exec rspec"
 mi_core()
 {
-bundle update josys-configurator
-rails db:create
-rails db:migrate
-rails db:migrate:with_data
-rails db:seed_fu
-rails db:seed
-rake rbac:seed_permission_matrix
-rake rbac:assign_admin_to_superadmin
-bin/rails db:seed_fu
-bin/rails db:seed
+  bundle update josys-configurator
+  rails db:create
+  rails db:migrate
+  rails db:migrate:with_data
+  rails db:seed_fu
+  rails db:seed
+  rake rbac:seed_permission_matrix
+  rake rbac:assign_admin_to_superadmin
+  bin/rails db:seed_fu
+  bin/rails db:seed
+}
+kill_process_by_port() {
+	local port=$1
+	local pid_list=$(lsof -i tcp:${port} | grep LISTEN | awk '{print $2}')
+
+	if [ -n "${pid_list}" ]; then
+		echo "Killing processes listening on port ${port}"
+		echo "${pid_list}" | xargs kill
+	else
+		echo "No processes found listening on port ${port}"
+	fi
+}
+kill_ruby_process(){
+  kill_process_by_port 3020
+  kill_process_by_port 3333
+  kill_process_by_port 3022
+  kill_process_by_port 3000
 }
 alias sc="bin/rails s -b 'ssl://localhost:3022?key=./localhost.key&cert=./localhost.crt'"
 alias start_server="~/Documents/coding/working/josys-developer-scripts/aws_scripts/start_server.sh"
@@ -65,3 +82,4 @@ export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 source <(fzf --zsh)
 export HOMEBREW_NO_AUTO_UPDATE=1
 precmd () {print -Pn "\e]0;%~\a"}
+export XDG_CONFIG_HOME="$HOME/.config"
