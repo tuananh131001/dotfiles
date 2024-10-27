@@ -4,11 +4,13 @@ return {
 		formatters_by_ft = {
 			ruby = { "rubocop" },
 			html = { "prettierhtml" },
+      python = { "black" },
 			json = { "jq" },
 			eruby = { "erb_format" },
 			javascript = { "biome" },
 			xml = { "xmllint" },
 			lua = { "stylua" },
+      go = { "gofmt" }
 		},
 		formatters = {
 			rubocop = {

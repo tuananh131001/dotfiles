@@ -83,3 +83,9 @@ source <(fzf --zsh)
 export HOMEBREW_NO_AUTO_UPDATE=1
 precmd () {print -Pn "\e]0;%~\a"}
 export XDG_CONFIG_HOME="$HOME/.config"
+tmux-window-name() {
+	($TMUX_PLUGIN_MANAGER_PATH/tmux-window-name/scripts/rename_session_windows.py &)
+}
+
+add-zsh-hook chpwd tmux-window-name
+

@@ -12,6 +12,11 @@ return {
 		opts = {
 			auto_install = true,
 		},
+		config = function()
+			require("mason-lspconfig").setup({
+				ensure_installed = { "solargraph", "gopls", "ts_ls", "pyright" }, -- Correct LSP for TypeScript/JavaScript
+			})
+		end,
 	},
 	{
 		"neovim/nvim-lspconfig",
@@ -20,11 +25,21 @@ return {
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 			local lspconfig = require("lspconfig")
-			lspconfig.ruby_lsp.setup({
-        root_dir = '/Users/anh.nt/Documents/coding/ruby-extensions',
+			lspconfig.solargraph.setup({})
+			lspconfig.lua_ls.setup({})
+			lspconfig.pyright.setup({})
+			lspconfig.gopls.setup({
 				capabilities = capabilities,
+				settings = {
+					gopls = {
+						analyses = {
+							unusedparams = true,
+						},
+						staticcheck = true,
+					},
+				},
 			})
-			lspconfig.lua_ls.setup({
+			lspconfig.ts_ls.setup({
 				capabilities = capabilities,
 			})
 		end,
