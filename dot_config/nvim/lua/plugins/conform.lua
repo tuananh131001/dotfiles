@@ -1,22 +1,23 @@
 return {
 	"stevearc/conform.nvim",
 	opts = {
+		format = {
+			timeout_ms = 3000,
+			async = false,
+			quiet = false,
+		},
 		formatters_by_ft = {
 			ruby = { "rubocop" },
 			html = { "prettierhtml" },
-      python = { "black" },
+			python = { "isort", "black" },
 			json = { "jq" },
 			eruby = { "erb_format" },
 			javascript = { "biome" },
 			xml = { "xmllint" },
 			lua = { "stylua" },
-      go = { "gofmt" }
+			go = { "gofmt" },
 		},
 		formatters = {
-			rubocop = {
-				options = { ignore_errors = true },
-				args = { "--server", "--autocorrect-all", "--force-exclusion", "--stderr", "--stdin", "$FILENAME" },
-			},
 			prettier = {
 				options = {
 					ft_parsers = {

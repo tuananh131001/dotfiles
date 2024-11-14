@@ -4,6 +4,7 @@ return {
 		branch = "0.1.x",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
+			"nvim-telescope/telescope-live-grep-args.nvim",
 			{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
 			"nvim-tree/nvim-web-devicons",
 			"folke/todo-comments.nvim",
@@ -11,7 +12,7 @@ return {
 		config = function()
 			local telescope = require("telescope")
 			local actions = require("telescope.actions")
-
+			local lga_actions = require("telescope-live-grep-args.actions")
 			telescope.setup({
 				defaults = {
 					sorting_strategy = "ascending", -- Show most recent at the bottom
@@ -27,10 +28,14 @@ return {
 						case_mode = "smart_case", -- or "ignore_case" or "respect_case"
 						-- the default case_mode is "smart_case"
 					},
+					live_grep_args = {
+						auto_quoting = true, -- enable/disable auto-quoting
+					},
 				},
 			})
 
 			telescope.load_extension("fzf")
+			telescope.load_extension("live_grep_args")
 
 			-- set keymaps
 			local keymap = vim.keymap -- for conciseness
@@ -39,7 +44,8 @@ return {
 			keymap.set("n", "<Space>ff", "<cmd>Telescope find_files<cr>", { desc = "[F]ind [F]ind files in cwd" })
 			keymap.set("n", "<Space>fp", "<cmd>Telescope spell_suggest<cr>", { desc = "[F]ind Spell [S]uggest" })
 			keymap.set("n", "<Space>fr", "<cmd>Telescope oldfiles<cr>", { desc = "[F]ind [R]ecent files" })
-			keymap.set("n", "<Space>sp", "<cmd>Telescope live_grep<cr>", { desc = "[F]ind [S]tring in cwd" })
+			-- keymap.set("n", "<Space>sp", "<cmd>Telescope live_grep<cr>", { desc = "[F]ind [S]tring in cwd" })
+			keymap.set("n", "<leader>sp", ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>")
 			keymap.set("n", "<Space>fb", builtin.buffers, { desc = "[ ] Find Existing Buffers" })
 			keymap.set("n", "<Space>fg", "<cmd>Telescope git_files<cr>", { desc = "[F]ind [G]it files" })
 			keymap.set("n", "<Space>fd", builtin.diagnostics, { desc = "[F]ind [D]iagnostics" })

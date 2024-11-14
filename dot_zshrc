@@ -51,10 +51,6 @@ clean_db(){
 rails db:drop db:create db:migrate
 rails db:migrate RAILS_ENV=test
 }
-PROMPT='%{$fg[yellow]%}[%D{%f/%m/%y} %D{%L:%M:%S}] '$PROMPT
-eval "$(starship init zsh)"
-
-
 # pnpm
 export PNPM_HOME="/Users/anh.nt/Library/pnpm"
 case ":$PATH:" in
@@ -88,4 +84,10 @@ tmux-window-name() {
 }
 
 add-zsh-hook chpwd tmux-window-name
+export CONFIGURATOR_BRANCH_NAME=development
+export PATH="$HOME/.tmuxifier/bin:$PATH"
+eval "$(tmuxifier init -)"
+
+# Theme starship
+setopt prompt_subst interactive_comments
 

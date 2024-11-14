@@ -3,6 +3,7 @@ vim.cmd("set number")
 vim.cmd("set tabstop=2")
 vim.cmd("set softtabstop=2")
 vim.cmd("set shiftwidth=2")
+vim.cmd("set scrolloff=999")
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
@@ -20,6 +21,7 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 vim.opt.clipboard = "unnamedplus"
+vim.g.have_nerd_font = true
 
 vim.g.mapleader = " "
 require("lazy").setup("plugins")
@@ -63,7 +65,6 @@ hooks.register(hooks.type.SCOPE_HIGHLIGHT, hooks.builtin.scope_highlight_from_ex
 
 -- tmux window name
 local uv = vim.loop
-
 vim.api.nvim_create_autocmd({ 'VimEnter', 'VimLeave' }, {
 	callback = function()
 		if vim.env.TMUX_PLUGIN_MANAGER_PATH then

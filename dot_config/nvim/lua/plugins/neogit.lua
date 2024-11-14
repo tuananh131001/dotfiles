@@ -10,10 +10,10 @@ return {
 			local neogit = require("neogit")
 			neogit.setup({})
 
-			vim.keymap.set("n", "<leader>gov", function()
+			vim.keymap.set("n", "<leader>gv", function()
 				neogit.open({ kind = "vsplit" })
 			end, { desc = "Neogit open vertical" })
-			vim.keymap.set("n", "<leader>goh", function()
+			vim.keymap.set("n", "<leader>gh", function()
 				neogit.open({ kind = "split_below" })
 			end, { desc = "Neogit open split below" })
 		end,
