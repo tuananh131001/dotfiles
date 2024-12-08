@@ -13,6 +13,7 @@ return {
 			json = { "jq" },
 			eruby = { "erb_format" },
 			javascript = { "biome" },
+      typescript = { { "prettierd", "prettier" } },
 			xml = { "xmllint" },
 			lua = { "stylua" },
 			go = { "gofmt" },

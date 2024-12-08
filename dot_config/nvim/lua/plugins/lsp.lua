@@ -14,7 +14,7 @@ return {
 		},
 		config = function()
 			require("mason-lspconfig").setup({
-				ensure_installed = { "solargraph", "gopls", "ts_ls", "pyright", "rubocop" }, -- Correct LSP for TypeScript/JavaScript
+				ensure_installed = { "solargraph", "gopls", "ts_ls", "pyright", "rubocop", "biome", "eslint" }, -- Correct LSP for TypeScript/JavaScript
 			})
 		end,
 	},
@@ -31,6 +31,12 @@ return {
 			lspconfig.lua_ls.setup({})
 			lspconfig.pyright.setup({})
 			lspconfig.rubocop.setup({
+				capabilities = capabilities,
+			})
+			lspconfig.eslint.setup({
+				capabilities = capabilities,
+			})
+			lspconfig.biome.setup({
 				capabilities = capabilities,
 			})
 			lspconfig.gopls.setup({
