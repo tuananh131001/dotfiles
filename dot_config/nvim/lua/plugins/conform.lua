@@ -17,6 +17,7 @@ return {
 			xml = { "xmllint" },
 			lua = { "stylua" },
 			go = { "gofmt" },
+      prisma = { "prisma" }
 		},
 		formatters = {
 			prettier = {

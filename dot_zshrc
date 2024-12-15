@@ -10,9 +10,6 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
-# Customize to your needs...
-# Start rbenv
-export PATH="$HOME/.rbenv/bin:$PATH"
 alias buj="bundle update josys-configurator"
 alias ber="bundle exec rspec"
 mi_core()
@@ -64,9 +61,7 @@ export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 export PUPPETEER_EXECUTABLE_PATH=`which chromium`
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 export PATH=/Users/$USER/.local/share/bob/nvim-bin:$PATH
-eval "$(nodenv init -)"
 export PATH=/Users/anh.nt/.cargo/bin:$PATH
-eval "$(rbenv init - zsh)"
 export NODE_MASTER_KEY=node_master_key
 
 # Instl.sh installer binary location
