@@ -76,5 +76,9 @@ precmd () {print -Pn "\e]0;%~\a"}
 export XDG_CONFIG_HOME="$HOME/.config"
 export CONFIGURATOR_BRANCH_NAME=development
 export PATH="$HOME/.tmuxifier/bin:$PATH"
-eval "$(tmuxifier init -)"
 setopt prompt_subst interactive_comments
+
+
+eval "$(zoxide init zsh)"
+eval "$(tmuxifier init -)"
+
