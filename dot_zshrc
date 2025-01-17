@@ -81,4 +81,4 @@ setopt prompt_subst interactive_comments
 
 eval "$(zoxide init zsh)"
 eval "$(tmuxifier init -)"
-
+export PATH="/Applications/kitty.app/Contents/MacOS:$PATH"
