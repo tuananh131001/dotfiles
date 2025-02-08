@@ -7,3 +7,6 @@ zoxide init fish | source
 set -x EDITOR /opt/homebrew/bin/nvim
 set -x VISUAL /opt/homebrew/bin/nvim
 
+
+# Alias
+alias pzf='nvim $(fzf -m --preview "bat --style=numbers --color=always {}")'
