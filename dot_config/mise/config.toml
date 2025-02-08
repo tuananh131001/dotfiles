@@ -1,0 +1,7 @@
+[tools]
+go = "1.23.2"
+python = "3.11"
+ruby = "3.3.5"
+node = "22.13.1"
+lua = "5.1"
+zig = "latest"
