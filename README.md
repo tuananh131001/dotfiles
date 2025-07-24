@@ -5,4 +5,6 @@
 - Chezmoi
 - Mise
 - NVIM (from snap)
+- Zoxide
+- FZF
 `sudo snap install nvim`
