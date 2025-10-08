@@ -1,6 +1,6 @@
 macos-option-as-alt=true
-theme = Catppuccin Mocha
-font-family = FiraCode Nerd Font Mono
+theme = TokyoNight
+font-family = Geist
 font-size=13
 mouse-hide-while-typing = true
 
