@@ -3,6 +3,3 @@ theme = TokyoNight
 font-family = Geist Mono
 font-size=13
 mouse-hide-while-typing = true
-keybind = ctrl+v=paste
-keybind = ctrl+c=copy
-
