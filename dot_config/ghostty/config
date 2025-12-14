@@ -3,8 +3,6 @@ theme = TokyoNight
 font-family = Geist Mono
 font-size=13
 mouse-hide-while-typing = true
-if os == "linux" {
-    keybind = ctrl+v=paste
-    keybind = ctrl+c=copy
-}
+keybind = ctrl+v=paste
+keybind = ctrl+c=copy
 
