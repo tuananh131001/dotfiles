@@ -1,13 +1,11 @@
 {{ if eq .chezmoi.os "darwin" -}}
-#!/bin/bash
+  #!/bin/bash
 
-# Install Homebrew packages (macOS only)
+  # Install formulae
+  brew install bash bc coreutils gawk gh glab gsed jq nowplaying-cli
 
-# Install cask fonts
-brew install --cask font-monaspace-nerd-font font-noto-sans-symbols-2
+  brew install sk tree-sitter-cli sops fish chezmoi mise starship bitwarden-cli tmux
 
-# Install formulae
-brew install bash bc coreutils gawk gh glab gsed jq nowplaying-cli
-
-brew install sk tree-sitter-cli sops
+  # Install cask fonts
+  brew install --cask font-monaspace-nerd-font font-noto-sans-symbols-2
 {{ end -}}

@@ -15,3 +15,11 @@ else
   git clone https://github.com/zuxfoucault/tmux-continuum_dev.git "$CONTINUUM_TPM_DIR"
   git checkout -b origin/feature/ghostty
 fi
+
+
+if command -v brew >/dev/null 2>&1; then
+  echo "Homebrew is installed"
+else
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+
