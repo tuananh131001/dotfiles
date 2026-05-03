@@ -2,10 +2,5 @@
   #!/bin/bash
 
   # Install formulae
-  brew install bash bc coreutils gawk gh glab gsed jq nowplaying-cli
-
-  brew install sk tree-sitter-cli sops fish chezmoi mise starship bitwarden-cli tmux ripgrep zoxide sesh
-
-  # Install cask fonts
-  brew install --cask font-monaspace-nerd-font font-noto-sans-symbols-2
+  brew bundle --file=Brewfile
 {{ end -}}
