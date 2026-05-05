@@ -1,4 +1,13 @@
 #!/bin/sh
+{{ if eq .chezmoi.os "darwin" -}}
+  #!/bin/bash
+
+  if command -v brew >/dev/null 2>&1; then
+    echo "Homebrew is installed"
+  else
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  fi
+{{ end -}}
 
 TPM_DIR="$HOME/.tmux/plugins/tpm"
 CONTINUUM_TPM_DIR="$HOME/.tmux/plugins/tmux-continuum"
@@ -17,9 +26,4 @@ else
 fi
 
 
-if command -v brew >/dev/null 2>&1; then
-  echo "Homebrew is installed"
-else
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-fi
 
