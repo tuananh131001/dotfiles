@@ -1,0 +1,5 @@
+{{ if eq .chezmoi.os "linux" -}}
+  #!/bin/bash
+
+  sudo paru -S --needed git brave baobab btop chezmoi github-cli gnome-disk-utility gnome-system-monitor ghostty neovim tmux vlc ripgrep 7zip nautilus showtime
+{{ end -}}
