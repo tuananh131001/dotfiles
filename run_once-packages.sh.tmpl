@@ -25,5 +25,11 @@ else
   git checkout -b origin/feature/ghostty
 fi
 
+if command -v starship >/dev/null 2>$1; then
+  echo "starship is installed. Skipping..."
+else
+  curl -sS https://starship.rs/install.sh | sh
+fi
+
 
 
