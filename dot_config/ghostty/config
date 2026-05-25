@@ -1,5 +1,8 @@
 macos-option-as-alt=true
 theme = TokyoNight
 font-family = Geist Mono
+font-feature = -calt
+font-feature = -liga
+font-feature = -dlig
 font-size=13
 mouse-hide-while-typing = true
