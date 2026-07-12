@@ -1,13 +1,7 @@
 # Ubuntu
+## Quick Setup
 
-### Prerequirement
-- Github CLI
-- Chezmoi
-- Mise
-- NVIM (from snap)
-- Zoxide
-- FZF
-`sudo snap install nvim`
+`sh -c "$(curl -fsLS https://get.chezmoi.io)" -- init --apply tuananh131001`
 
 ### Usage
 
