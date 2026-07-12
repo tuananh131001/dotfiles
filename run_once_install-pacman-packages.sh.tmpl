@@ -1,6 +1,11 @@
 {{ if eq .chezmoi.os "linux" -}}
-  #!/bin/bash
+{{   $id := .chezmoi.osRelease.id -}}
+{{   $idLike := "" -}}
+  {{   if hasKey .chezmoi.osRelease "idLike" }}{{ $idLike = .chezmoi.osRelease.idLike }}{{ end -}}
+    {{   if or (eq $id "arch") (contains "arch" $idLike) -}}
+      #!/bin/bash
 
-  sudo paru -S --needed git brave baobab btop chezmoi github-cli gnome-disk-utility gnome-system-monitor ghostty neovim tmux vlc ripgrep 7zip nautilus showtime tree-sitter-cli zoxide skim mise fcitx5 fcitx5-unikey kcm-fcitx5
-  paru -S sesh-bin
+      sudo paru -S --needed git brave baobab btop chezmoi github-cli gnome-disk-utility gnome-system-monitor ghostty neovim tmux vlc ripgrep 7zip nautilus showtime tree-sitter-cli zoxide skim mise fcitx5 fcitx5-unikey kcm-fcitx5
+      paru -S sesh-bin
+    {{   end -}}
 {{ end -}}
