@@ -23,6 +23,5 @@ brew "zoxide"
 brew "sesh"
 
 # Cask fonts
-cask "font-monaspice-nerd-font"
+cask "font-monaspace-nerd-font"
 cask "font-noto-sans-symbols-2"
-
