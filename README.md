@@ -1,4 +1,3 @@
-# Ubuntu
 ## Quick Setup
 
 `sh -c "$(curl -fsLS https://get.chezmoi.io)" -- init --apply tuananh131001`
