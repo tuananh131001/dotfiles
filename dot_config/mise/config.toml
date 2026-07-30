@@ -1,14 +1,10 @@
 [tools]
-python = "latest"
-ruby = "latest"
-node = "latest"
-lua = "latest"
+python = "3.11"
+ruby = "3.3.5"
+node = "22"
+lua = "5.1"
 zig = "latest"
 go = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = ["ruby"]
-
-[settings.ruby]
-compile = false
-# disable_backends = ["asdf"]
