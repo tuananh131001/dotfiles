@@ -1,0 +1,3 @@
+{{ if ne .chezmoi.os "linux" -}}
+.local/bin/install-desktop-packages.sh
+{{ end -}}
