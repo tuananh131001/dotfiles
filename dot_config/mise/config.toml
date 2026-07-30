@@ -1,8 +1,8 @@
 [tools]
-python = "3.11"
-ruby = "3.3.5"
-node = "22"
-lua = "5.1"
+python = "latest"
+ruby = "latest"
+node = "latest"
+lua = "latest"
 zig = "latest"
 go = "latest"
 
