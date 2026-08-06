@@ -36,11 +36,11 @@ text = "#E8EEFF"
 # See https://github.com/y3owk1n/neru/blob/main/docs/CONFIGURATION.md#hotkeys
 # See https://github.com/y3owk1n/neru/blob/main/docs/CLI.md
 [hotkeys]
-"Primary+Shift+Space" = "hints"
+"Primary+Shift+Space" = "__disabled__"
 "Primary+Shift+G" = "grid"
-"Primary+Shift+C" = "recursive_grid"
-"Primary+Shift+S" = "scroll"
-"Alt+Tab"          = "action move_monitor"
+"Option+Escape" = "recursive_grid"
+"Option+Tab" = "scroll"
+"Option+m"          = "action move_monitor"
 
 # Hint mode
 # See https://github.com/y3owk1n/neru/blob/main/docs/CONFIGURATION.md#hints
@@ -91,7 +91,7 @@ visible_check_enabled = false
 "Backspace" = "action backspace"
 "Tab" = "action cycle_hint"
 "Shift+Tab" = "action cycle_hint --backward"
-"Shift+L" = "action left_click"
+"Option+Space" = "action left_click"
 "Shift+R" = "action right_click"
 "Shift+M" = "action middle_click"
 "Shift+I" = "action mouse_down"
@@ -183,9 +183,9 @@ border_width = 1
 # See https://github.com/y3owk1n/neru/blob/main/docs/CONFIGURATION.md#recursive_grid
 [recursive_grid]
 enabled = true
-grid_cols = 3                               # Number of columns (>= 1)
-grid_rows = 3                               # Number of rows (>= 1)
-keys = "rtyfghvbn"                          # Cell selection keys (must be grid_cols * grid_rows chars)
+grid_cols = 5                              # Number of columns (>= 1)
+grid_rows = 5                               # Number of rows (>= 1)
+keys = "qwertasdfgcvbnmyuiophjkl;"                          # Cell selection keys (must be grid_cols * grid_rows chars)
 min_size_width = 1                          # Stop subdividing below this width (px)
 min_size_height = 1                         # Stop subdividing below this height (px)
 max_depth = 10                              # Maximum recursion levels (1–20)
@@ -211,6 +211,13 @@ duration_ms = 50                            # Recursive-grid animation duration 
 
 [recursive_grid.ui]
 line_width = 1
+# Protanopia-friendly palette: Okabe-Ito blue for structure, amber for selection.
+# Selection reads on the blue<->yellow axis, which red-blind vision preserves.
+line_color                 = { light = "#CC0072B2", dark = "#CC56B4E9" }
+text_color                 = { light = "#FF00436B", dark = "#FF9BD9F5" }
+highlight_color            = { light = "#59E69F00", dark = "#73F0B429" }
+label_background_color     = { light = "#F2FFFFFF", dark = "#F20B1220" }
+sub_key_preview_text_color = { light = "#990072B2", dark = "#9956B4E9" }
 font_size = 10
 font_family = ""
 label_background = false                    # Add rounded backgrounds behind cell labels
@@ -225,8 +232,6 @@ sub_key_preview_font_size = 8
 sub_key_preview_autohide_multiplier = 1.5
 sub_key_preview_label_char = ""             # Override sub-key preview labels with a single character (e.g. "·"); empty = use key
 
-# Virtual pointer
-# See https://github.com/y3owk1n/neru/blob/main/docs/CONFIGURATION.md#virtual_pointer
 [virtual_pointer.ui]
 char = "●"             # Character to display (e.g. "•", "●", "◉", "⬤") or anything you like
 font_size = 8
@@ -326,14 +331,14 @@ enabled = false
 text = "Monitor Select"
 
 [mode_indicator.ui]
-font_size = 10
-font_family = ""
-border_width = 1
+font_size = 4
+border_radius = 50
+border_color = "#00000000"
+border_width = 0
 padding_x = -1
 padding_y = -1
-border_radius = -1
-indicator_x_offset = 20
-indicator_y_offset = 20
+indicator_x_offset = 10
+indicator_y_offset = -20
 
 # Sticky modifiers
 # See https://github.com/y3owk1n/neru/blob/main/docs/CONFIGURATION.md#sticky_modifiers
