@@ -3,3 +3,10 @@
     url = "https://github.com/tuananh131001/nvim_config.git"
     refreshPeriod = "1h"
 
+[".config/karabiner"]
+    type = "git-repo"
+    url = "git@github.com:tuananh131001/karabiner.git"
+    refreshPeriod = "168h"
+    [".config/karabiner".pull]
+        args = ["--ff-only"]
+
