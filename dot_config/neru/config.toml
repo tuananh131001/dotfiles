@@ -48,7 +48,6 @@ duration_ms = 50                            # Recursive-grid animation duration 
 [recursive_grid.hotkeys]
 "Escape" = "idle"
 "`" = "toggle-cursor-follow-selection"
-"Space" = "action reset"
 "Backspace" = "action backspace"
 
 "Space" = ["action left_click", "idle"]
