@@ -37,3 +37,9 @@ else
  curl https://mise.run | sh
 fi
 
+if command -v croc >/dev/null 2>&1; then
+  echo "Croc is installed. Skipping..."
+else
+ curl https://getcroc.com | bash
+fi
+
