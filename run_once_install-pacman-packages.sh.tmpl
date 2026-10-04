@@ -1,8 +1,8 @@
 {{ if eq .chezmoi.os "linux" -}}
   #!/bin/bash
 
-  sudo pacman -S --needed git github-cli chezmoi neovim tmux ripgrep 7zip tree-sitter-cli zoxide skim mise btop
-  yay -S sesh-bin
+  sudo pacman -S --needed git github-cli chezmoi neovim fish tmux zellij ripgrep 7zip tree-sitter-cli zoxide skim mise btop jq
+  yay -S --needed sesh-bin
 
   echo "Core CLI packages installed."
   echo "Desktop packages (terminal/gui/input) are opt-in: ~/.local/bin/install-desktop-packages.sh all"

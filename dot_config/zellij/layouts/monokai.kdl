@@ -1,0 +1,39 @@
+layout {
+    default_tab_template {
+        pane size=1 borderless=true {
+            plugin location="https://github.com/dj95/zjstatus/releases/download/v0.25.0/zjstatus.wasm" {
+                color_dark2   "#19181a"
+                color_dark1   "#221f22"
+                color_dimmed2 "#939293"
+                color_dimmed5 "#403e41"
+                color_green   "#a9dc76"
+                color_yellow  "#ffd866"
+                color_orange  "#fc9867"
+                color_cyan    "#78dce8"
+
+                format_left   "#[fg=$green,bg=$dark2]#[fg=$dark2,bg=$green] #[fg=$green,bg=$dimmed5] {session}#[fg=$dimmed5,bg=$dark2]{tabs}"
+                format_center ""
+                format_right  "{mode}"
+                format_space  "#[bg=$dark2]"
+
+                border_enabled             "false"
+                hide_frame_for_single_pane "false"
+
+                mode_locked       ""
+                mode_normal       "#[fg=$dark2,bg=$cyan,bold] NORMAL "
+                mode_tmux         "#[fg=$dark2,bg=$yellow,bold] PREFIX "
+                mode_scroll       "#[fg=$dark2,bg=$orange,bold] SCROLL "
+                mode_enter_search "#[fg=$dark2,bg=$orange,bold] SEARCH "
+                mode_search       "#[fg=$dark2,bg=$orange,bold] SEARCH "
+                mode_resize       "#[fg=$dark2,bg=$cyan,bold] RESIZE "
+                mode_rename_tab   "#[fg=$dark2,bg=$cyan,bold] RENAME "
+
+                tab_normal "#[fg=$dimmed2,bg=$dark2]#[fg=$dark2,bg=$dimmed2,bold]{index}#[fg=$dimmed2,bg=$dark1]#[fg=$dimmed2,bg=$dark1] {name} #[fg=$dark1,bg=$dark2]"
+                tab_active "#[fg=$green,bg=$dark2]#[fg=$dark2,bg=$green,bold]{index}#[fg=$green,bg=$dimmed5]#[fg=$green,bg=$dimmed5] {name} #[fg=$dimmed5,bg=$dark2]"
+                tab_rename "#[fg=$yellow,bg=$dark2]#[fg=$dark2,bg=$yellow,bold]{index}#[fg=$yellow,bg=$dimmed5]#[fg=$yellow,bg=$dimmed5] {name} #[fg=$dimmed5,bg=$dark2]"
+                tab_separator ""
+            }
+        }
+        children
+    }
+}
