@@ -1,6 +1,6 @@
 {{ if eq .chezmoi.os "darwin" -}}
   #!/bin/bash
 
-  # Install formulae
+  BREWFILE_SHA256="{{ include "Brewfile" | sha256sum }}"
   brew bundle --file=Brewfile
 {{ end -}}

@@ -1,0 +1,12 @@
+#!/bin/sh
+set -eu
+
+tab=$(zellij action list-panes --all --json | jq -r --argjson self "$ZELLIJ_PANE_ID" \
+  'map(select(.id == $self and (.is_plugin | not))) | first | .tab_id // empty')
+[ -n "$tab" ] || {
+  echo "zellij-close-other-tabs: current tab not found" >&2
+  exit 1
+}
+for id in $(zellij action list-tabs --json | jq -r --argjson tab "$tab" '.[] | select(.tab_id != $tab) | .tab_id'); do
+  zellij action close-tab-by-id "$id"
+done

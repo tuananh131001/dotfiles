@@ -1,0 +1,16 @@
+macos-option-as-alt=true
+theme = Monokai Classic
+font-family = Geist Mono
+font-feature = -calt
+font-feature = -liga
+font-feature = -dlig
+font-size=13
+mouse-hide-while-typing = true
+app-notifications = no-clipboard-copy
+{{ if eq .chezmoi.os "darwin" -}}
+command = /opt/homebrew/bin/fish --login --command "zellij attach --create main; exec fish --login"
+{{ else if eq .chezmoi.os "linux" -}}
+command = /usr/bin/fish --login --command "zellij attach --create main; exec fish --login"
+keybind = ctrl+v=paste
+keybind = ctrl+c=copy
+{{ end -}}

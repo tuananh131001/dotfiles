@@ -20,6 +20,7 @@ brew "tmux"
 brew "ripgrep"
 brew "zoxide"
 brew "sesh"
+brew "zellij"
 
 # Cask fonts
 cask "font-monaspace-nerd-font"

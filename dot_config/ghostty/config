@@ -1,9 +1,0 @@
-macos-option-as-alt=true
-theme = Monokai Classic
-font-family = Geist Mono
-font-feature = -calt
-font-feature = -liga
-font-feature = -dlig
-font-size=13
-mouse-hide-while-typing = true
-app-notifications = no-clipboard-copy

@@ -8,3 +8,6 @@ export EDITOR="nvim"
 export PATH="$HOME/.local/bin:$PATH"
 eval "$(mise activate fish)"
 alias claude-danger="claude --dangerously-skip-permissions"
+abbr -a zj zellij
+abbr -a zja 'zellij attach'
+abbr -a zjl 'zellij ls'
