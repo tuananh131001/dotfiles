@@ -1,3 +1,6 @@
+# Tap
+tap "abue-ammar/tinycast", trusted: true
+
 # CLI tools
 brew "bash"
 brew "bc"
@@ -24,3 +27,6 @@ brew "sesh"
 # Cask fonts
 cask "font-monaspace-nerd-font"
 cask "font-noto-sans-symbols-2"
+
+# Cash Apps
+cask "tinycast"
