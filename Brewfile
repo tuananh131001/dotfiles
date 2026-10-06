@@ -18,6 +18,7 @@ brew "zoxide"
 brew "sesh"
 brew "bottom"
 brew "mpv"
+brew "fzf"
 
 # Cash Apps
 cask "tinycast"
