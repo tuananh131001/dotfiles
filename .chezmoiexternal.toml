@@ -13,3 +13,10 @@
         args = ["--ff-only"]
 
 {{ end -}}
+
+[".local/share/agent-expert"]
+    type = "git-repo"
+    url = "https://github.com/tuananh131001/agent-expert.git"
+    refreshPeriod = "1h"
+    [".local/share/agent-expert".pull]
+        args = ["--ff-only"]
