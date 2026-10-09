@@ -1,0 +1,429 @@
+# Mado's keymap (config.toml's `keymap` says where it is read from,
+# ~/.config/mado/keymap.toml by default). Written by `mado keys --template`.
+# Mado reads it again whenever it is saved; a broken file keeps the last
+# good keymap and says why at the bottom of the window.
+#
+# preset = "none": this file is the whole keymap, so deleting a line
+# unbinds its key. (preset = "mado" starts from the built-in map instead,
+# and the file only changes it; "unbind" then drops a built-in bind.)
+#
+# leader-key is the leader: it opens leader mode, pressed again it goes
+# to the program, and it leaves the other modes. Wherever `leader` is a
+# key below, it means that chord, so changing leader-key moves them all.
+#
+# Keys are spelled modifiers first: "Ctrl g", "Alt J" (Alt-Shift-j),
+# "Cmd D" (⌘⇧D), "Cmd Shift enter". Named keys: left right up down tab
+# enter esc backspace space PageUp PageDown Home End F1 to F12.
+#
+# A bind runs a command, or a list of them in order. A command is an
+# action, "mode NAME" or one of the window's own commands. An action
+# leaves the mode it ran in only with a "mode locked" after it.
+# [[shared]] blocks bind keys in several modes at once:
+#   [[shared]]
+#   except = ["locked", "enter-search", "rename-tab", "rename-pane"]
+#   binds = { "Ctrl y" = "mode copy" }
+#
+# Window commands: send palette agents sessions projects close-window
+#   edit-config pane-hints agent-jump quick-select quick-open
+# Modes: locked leader normal pane tab resize move session scroll enter-search
+#   search rename-tab rename-pane hints quick-select copy
+# Motions (copy-move): left right up down word-forward word-backward word-end
+#   big-word-forward big-word-backward big-word-end line-start first-non-blank
+#   line-end top bottom view-top view-middle view-bottom half-page-up
+#   half-page-down page-up page-down
+# Actions, as `mado action` takes them too:
+#   new-pane [left|right|up|down] [--floating] [--cwd DIR] [--name NAME] [-- COMMAND...]
+#   close-pane
+#   move-focus DIR
+#   move-focus-or-tab DIR
+#   nav DIR
+#   focus-next
+#   focus-previous
+#   focus-last
+#   focus-pane ID
+#   toggle-fullscreen
+#   toggle-floating
+#   toggle-embed
+#   toggle-frames
+#   new-tab [--cwd DIR] [NAME]
+#   close-tab
+#   go-to-tab N
+#   next-tab
+#   previous-tab
+#   toggle-tab
+#   break-pane
+#   break-pane-left
+#   break-pane-right
+#   resize increase|decrease [DIR]
+#   move-pane [DIR]
+#   move-pane-backwards
+#   toggle-sync
+#   next-swap-layout
+#   previous-swap-layout
+#   rename-tab NAME
+#   rename-pane NAME
+#   undo-rename-tab
+#   undo-rename-pane
+#   scroll-up
+#   scroll-down
+#   half-page-scroll-up
+#   half-page-scroll-down
+#   page-scroll-up
+#   page-scroll-down
+#   scroll-to-top
+#   scroll-to-bottom
+#   search up|down
+#   search-toggle-option case-sensitivity|whole-word|wrap
+#   copy-move MOTION
+#   copy-select char|line|block
+#   copy-yank
+#   edit-scrollback
+#   edit-file PATH [LINE]
+#   detach
+#   quit
+
+preset = "none"
+leader-key = "Ctrl g"
+
+# Every mode. A mode's own bind of the same key wins.
+[global]
+"Cmd d" = ["new-pane right", "mode locked"]   # new pane right
+"Cmd j" = ["agent-jump", "mode locked"]       # agent jump: the one that needs you
+"Cmd o" = ["projects", "mode locked"]         # projects: open one here
+"Cmd p" = "pane-hints"                        # pane hints: go to a pane
+"Cmd t" = ["new-tab", "mode locked"]          # new tab
+"Cmd w" = ["close-pane", "mode locked"]       # close pane
+"Cmd A" = "agents"                            # every agent, to jump to
+"Cmd G" = ["new-pane --floating --name agents -- agents-pick", "mode locked"]  # agents-pick: jump, preview, close
+"Cmd C" = "quick-select"                      # quick select: copy a URL, path, hash
+"Cmd D" = ["new-pane down", "mode locked"]    # new pane below
+"Cmd E" = ["edit-scrollback", "mode locked"]  # scrollback in editor
+"Cmd N" = ["new-pane", "mode locked"]         # new pane
+"Cmd O" = ["sessions", "mode locked"]         # sessions: switch, new, rename, end
+"Cmd P" = "palette"                           # command palette
+"Cmd W" = "close-window"                      # close the window (detach)
+"Cmd 1" = ["go-to-tab 1", "mode locked"]      # tab 1
+"Cmd 2" = ["go-to-tab 2", "mode locked"]      # tab 2
+"Cmd 3" = ["go-to-tab 3", "mode locked"]      # tab 3
+"Cmd 4" = ["go-to-tab 4", "mode locked"]      # tab 4
+"Cmd 5" = ["go-to-tab 5", "mode locked"]      # tab 5
+"Cmd 6" = ["go-to-tab 6", "mode locked"]      # tab 6
+"Cmd 7" = ["go-to-tab 7", "mode locked"]      # tab 7
+"Cmd 8" = ["go-to-tab 8", "mode locked"]      # tab 8
+"Cmd 9" = ["go-to-tab 9", "mode locked"]      # tab 9
+"Cmd ," = ["edit-config", "mode locked"]      # edit config.toml
+"Cmd [" = ["focus-previous", "mode locked"]   # previous pane
+"Cmd ]" = ["focus-next", "mode locked"]       # next pane
+"Cmd {" = ["previous-tab", "mode locked"]     # previous tab
+"Cmd }" = ["next-tab", "mode locked"]         # next tab
+"Cmd Shift enter" = ["toggle-fullscreen", "mode locked"]  # fullscreen
+"Cmd Alt w" = ["close-tab", "mode locked"]    # close tab
+"Cmd Alt left" = ["move-focus left", "mode locked"]  # focus left
+"Cmd Alt down" = ["move-focus down", "mode locked"]  # focus down
+"Cmd Alt up" = ["move-focus up", "mode locked"]  # focus up
+"Cmd Alt right" = ["move-focus right", "mode locked"]  # focus right
+"Cmd Ctrl left" = "resize increase left"      # grow left
+"Cmd Ctrl down" = "resize increase down"      # grow down
+"Cmd Ctrl up" = "resize increase up"          # grow up
+"Cmd Ctrl right" = "resize increase right"    # grow right
+"Cmd f" = "mode enter-search"                 # search
+"Cmd R" = "mode rename-tab"                   # rename tab
+"Cmd Alt r" = "mode rename-pane"              # rename pane
+
+# LOCKED. Other keys go to the program.
+[locked]
+"Ctrl h" = "nav left"   # focus left (nvim first)
+"Ctrl j" = "nav down"   # focus down (nvim first)
+"Ctrl k" = "nav up"     # focus up (nvim first)
+"Ctrl l" = "nav right"  # focus right (nvim first)
+leader = "mode leader"  # leader: one key
+"Alt left" = "write \eb"         # word left (ESC b)
+"Alt right" = "write \ef"        # word right (ESC f)
+"Cmd left" = "write \x01"        # start of line (^A)
+"Cmd right" = "write \x05"       # end of line (^E)
+"Cmd backspace" = "write \x15"   # delete to start of line (^U)
+
+# LEADER. Other keys go back to locked.
+[leader]
+"a" = ["agent-jump", "mode locked"]           # agent jump: the one that needs you
+"b" = ["break-pane", "mode locked"]           # pane to new tab
+"d" = "detach"                                # detach
+"e" = ["edit-scrollback", "mode locked"]      # scrollback in editor
+"f" = ["projects", "mode locked"]             # projects: open one here
+"h" = ["previous-tab", "mode locked"]         # previous tab
+"l" = ["next-tab", "mode locked"]             # next tab
+"n" = ["new-pane", "mode locked"]             # new pane
+"o" = ["focus-next", "mode locked"]           # next pane
+"q" = "pane-hints"                            # pane hints: go to a pane
+"s" = ["new-pane down", "mode locked"]        # new pane below
+"t" = ["new-tab", "mode locked"]              # new tab
+"u" = "quick-open"                            # quick open: a URL or path on screen
+"v" = ["new-pane right", "mode locked"]       # new pane right
+"w" = ["sessions", "mode locked"]             # sessions: switch, new, rename, end
+"x" = ["close-pane", "mode locked"]           # close pane
+"z" = ["toggle-fullscreen", "mode locked"]    # fullscreen
+"A" = ["agents", "mode locked"]               # every agent, to jump to
+"E" = ["toggle-embed", "mode locked"]         # float/embed pane
+"F" = ["toggle-floating", "mode locked"]      # show/hide floating
+"X" = ["close-tab", "mode locked"]            # close tab
+"1" = ["go-to-tab 1", "mode locked"]          # tab 1
+"2" = ["go-to-tab 2", "mode locked"]          # tab 2
+"3" = ["go-to-tab 3", "mode locked"]          # tab 3
+"4" = ["go-to-tab 4", "mode locked"]          # tab 4
+"5" = ["go-to-tab 5", "mode locked"]          # tab 5
+"6" = ["go-to-tab 6", "mode locked"]          # tab 6
+"7" = ["go-to-tab 7", "mode locked"]          # tab 7
+"8" = ["go-to-tab 8", "mode locked"]          # tab 8
+"9" = ["go-to-tab 9", "mode locked"]          # tab 9
+"space" = "quick-select"                      # quick select: copy a URL, path, hash
+":" = ["palette", "mode locked"]              # command palette
+";" = ["focus-last", "mode locked"]           # last pane
+"left" = ["move-focus left", "mode locked"]   # focus left
+"down" = ["move-focus down", "mode locked"]   # focus down
+"up" = ["move-focus up", "mode locked"]       # focus up
+"right" = ["move-focus right", "mode locked"]  # focus right
+"tab" = ["toggle-tab", "mode locked"]         # last tab
+leader = ["mode locked", "send"]              # pass the key to the program
+"c" = "mode rename-pane"                      # rename pane
+"m" = "mode move"                             # move mode
+"p" = "mode pane"                             # pane mode
+"r" = "mode resize"                           # resize mode
+"T" = "mode tab"                              # tab mode
+"," = "mode rename-tab"                       # rename tab
+"/" = "mode enter-search"                     # search
+"[" = "mode copy"                             # copy mode
+"enter" = "mode locked"                       # back to locked
+"esc" = "mode locked"                         # back to locked
+"Ctrl c" = "mode locked"                      # back to locked
+
+# NORMAL. Other keys do nothing. Nothing is bound.
+[normal]
+
+# PANE. Other keys do nothing.
+[pane]
+"d" = ["new-pane down", "mode locked"]      # new pane below
+"s" = ["new-pane down", "mode locked"]      # new pane below
+"e" = ["toggle-embed", "mode locked"]       # float/embed pane
+"f" = ["toggle-fullscreen", "mode locked"]  # fullscreen
+"z" = ["toggle-fullscreen", "mode locked"]  # fullscreen
+"h" = "move-focus left"                     # focus left
+"left" = "move-focus left"                  # focus left
+"j" = "move-focus down"                     # focus down
+"down" = "move-focus down"                  # focus down
+"k" = "move-focus up"                       # focus up
+"up" = "move-focus up"                      # focus up
+"l" = "move-focus right"                    # focus right
+"right" = "move-focus right"                # focus right
+"n" = ["new-pane", "mode locked"]           # new pane
+"r" = ["new-pane right", "mode locked"]     # new pane right
+"v" = ["new-pane right", "mode locked"]     # new pane right
+"w" = ["toggle-floating", "mode locked"]    # show/hide floating
+"x" = ["close-pane", "mode locked"]         # close pane
+"Z" = ["toggle-frames", "mode locked"]      # pane frames
+"tab" = "focus-next"                        # next pane
+"c" = "mode rename-pane"                    # rename pane
+"p" = "mode locked"                         # back to locked
+"enter" = "mode locked"                     # back to locked
+"esc" = "mode locked"                       # back to locked
+leader = "mode locked"                      # back to locked
+
+# TAB. Other keys do nothing.
+[tab]
+"b" = ["break-pane", "mode locked"]        # pane to new tab
+"h" = "previous-tab"                       # previous tab
+"k" = "previous-tab"                       # previous tab
+"left" = "previous-tab"                    # previous tab
+"up" = "previous-tab"                      # previous tab
+"j" = "next-tab"                           # next tab
+"l" = "next-tab"                           # next tab
+"down" = "next-tab"                        # next tab
+"right" = "next-tab"                       # next tab
+"n" = ["new-tab", "mode locked"]           # new tab
+"t" = ["new-tab", "mode locked"]           # new tab
+"s" = ["toggle-sync", "mode locked"]       # sync input
+"x" = ["close-tab", "mode locked"]         # close tab
+"1" = ["go-to-tab 1", "mode locked"]       # tab 1
+"2" = ["go-to-tab 2", "mode locked"]       # tab 2
+"3" = ["go-to-tab 3", "mode locked"]       # tab 3
+"4" = ["go-to-tab 4", "mode locked"]       # tab 4
+"5" = ["go-to-tab 5", "mode locked"]       # tab 5
+"6" = ["go-to-tab 6", "mode locked"]       # tab 6
+"7" = ["go-to-tab 7", "mode locked"]       # tab 7
+"8" = ["go-to-tab 8", "mode locked"]       # tab 8
+"9" = ["go-to-tab 9", "mode locked"]       # tab 9
+"[" = ["break-pane-left", "mode locked"]   # pane to tab left
+"]" = ["break-pane-right", "mode locked"]  # pane to tab right
+"tab" = "toggle-tab"                       # last tab
+"r" = "mode rename-tab"                    # rename tab
+"," = "mode rename-tab"                    # rename tab
+"T" = "mode locked"                        # back to locked
+"enter" = "mode locked"                    # back to locked
+"esc" = "mode locked"                      # back to locked
+leader = "mode locked"                     # back to locked
+
+# RESIZE. Other keys do nothing.
+[resize]
+"h" = "resize increase left"       # grow left
+"left" = "resize increase left"    # grow left
+"j" = "resize increase down"       # grow down
+"down" = "resize increase down"    # grow down
+"k" = "resize increase up"         # grow up
+"up" = "resize increase up"        # grow up
+"l" = "resize increase right"      # grow right
+"right" = "resize increase right"  # grow right
+"H" = "resize decrease left"       # shrink left
+"J" = "resize decrease down"       # shrink down
+"K" = "resize decrease up"         # shrink up
+"L" = "resize decrease right"      # shrink right
+"+" = "resize increase"            # grow
+"=" = "resize increase"            # grow
+"-" = "resize decrease"            # shrink
+"r" = "mode locked"                # back to locked
+"enter" = "mode locked"            # back to locked
+"esc" = "mode locked"              # back to locked
+leader = "mode locked"             # back to locked
+
+# MOVE. Other keys do nothing.
+[move]
+"h" = "move-pane left"       # move left
+"left" = "move-pane left"    # move left
+"j" = "move-pane down"       # move down
+"down" = "move-pane down"    # move down
+"k" = "move-pane up"         # move up
+"up" = "move-pane up"        # move up
+"l" = "move-pane right"      # move right
+"right" = "move-pane right"  # move right
+"n" = "move-pane"            # move to next
+"tab" = "move-pane"          # move to next
+"N" = "move-pane-backwards"  # move to previous
+"m" = "mode locked"          # back to locked
+"enter" = "mode locked"      # back to locked
+"esc" = "mode locked"        # back to locked
+leader = "mode locked"       # back to locked
+
+# SESSION. Other keys do nothing. Nothing is bound.
+[session]
+
+# SCROLL. Other keys do nothing. Nothing is bound.
+[scroll]
+
+# ENT-SEARCH. Other keys type into the line.
+[enter-search]
+"enter" = "mode search"   # search mode
+"Cmd g" = "mode search"   # search mode
+"esc" = "mode locked"     # back to locked
+"Ctrl c" = "mode locked"  # back to locked
+leader = "mode locked"    # back to locked
+
+# SEARCH. Other keys do nothing.
+[search]
+"c" = "search-toggle-option case-sensitivity"  # match case
+"d" = "half-page-scroll-down"                 # half page down
+"Ctrl d" = "half-page-scroll-down"            # half page down
+"g" = "scroll-to-top"                         # to the top
+"Home" = "scroll-to-top"                      # to the top
+"h" = "page-scroll-up"                        # page up
+"left" = "page-scroll-up"                     # page up
+"PageUp" = "page-scroll-up"                   # page up
+"Ctrl b" = "page-scroll-up"                   # page up
+"j" = "scroll-down"                           # scroll down
+"down" = "scroll-down"                        # scroll down
+"Ctrl e" = "scroll-down"                      # scroll down
+"k" = "scroll-up"                             # scroll up
+"up" = "scroll-up"                            # scroll up
+"Ctrl y" = "scroll-up"                        # scroll up
+"l" = "page-scroll-down"                      # page down
+"space" = "page-scroll-down"                  # page down
+"right" = "page-scroll-down"                  # page down
+"PageDown" = "page-scroll-down"               # page down
+"Ctrl f" = "page-scroll-down"                 # page down
+"n" = "search up"                             # next match above
+"Cmd g" = "search up"                         # next match above
+"o" = "search-toggle-option whole-word"       # whole words
+"q" = ["scroll-to-bottom", "mode locked"]     # to the bottom
+"esc" = ["scroll-to-bottom", "mode locked"]   # to the bottom
+"Ctrl c" = ["scroll-to-bottom", "mode locked"]  # to the bottom
+"u" = "half-page-scroll-up"                   # half page up
+"Ctrl u" = "half-page-scroll-up"              # half page up
+"w" = "search-toggle-option wrap"             # wrap around
+"G" = "scroll-to-bottom"                      # to the bottom
+"End" = "scroll-to-bottom"                    # to the bottom
+"N" = "search down"                           # next match below
+"Cmd G" = "search down"                       # next match below
+"/" = "mode enter-search"                     # search
+"enter" = "mode locked"                       # back to locked
+leader = "mode locked"                        # back to locked
+
+# RENAME-TAB. Other keys type into the line.
+[rename-tab]
+"esc" = ["undo-rename-tab", "mode locked"]    # cancel rename
+"Ctrl c" = ["undo-rename-tab", "mode locked"]  # cancel rename
+"enter" = "mode locked"                       # back to locked
+leader = "mode locked"                        # back to locked
+
+# RENAME-PANE. Other keys type into the line.
+[rename-pane]
+"esc" = ["undo-rename-pane", "mode locked"]   # cancel rename
+"Ctrl c" = ["undo-rename-pane", "mode locked"]  # cancel rename
+"enter" = "mode locked"                       # back to locked
+leader = "mode locked"                        # back to locked
+
+# HINTS. Other keys go back to locked.
+[hints]
+"esc" = "mode locked"     # back to locked
+"Ctrl c" = "mode locked"  # back to locked
+leader = "mode locked"    # back to locked
+
+# QUICK-SELECT. Other keys go back to locked.
+[quick-select]
+"esc" = "mode locked"     # back to locked
+"Ctrl c" = "mode locked"  # back to locked
+leader = "mode locked"    # back to locked
+
+# COPY. Other keys do nothing.
+[copy]
+"b" = "copy-move word-backward"         # word back
+"e" = "copy-move word-end"              # end of word
+"g" = "copy-move top"                   # the oldest line
+"h" = "copy-move left"                  # left
+"left" = "copy-move left"               # left
+"j" = "copy-move down"                  # down
+"down" = "copy-move down"               # down
+"k" = "copy-move up"                    # up
+"up" = "copy-move up"                   # up
+"l" = "copy-move right"                 # right
+"right" = "copy-move right"             # right
+"n" = "search up"                       # next match above
+"v" = "copy-select char"                # select
+"space" = "copy-select char"            # select
+"w" = "copy-move word-forward"          # next word
+"y" = ["copy-yank", "mode locked"]      # copy the selection
+"enter" = ["copy-yank", "mode locked"]  # copy the selection
+"B" = "copy-move big-word-backward"     # WORD back
+"E" = "copy-move big-word-end"          # end of WORD
+"G" = "copy-move bottom"                # the last line
+"H" = "copy-move view-top"              # top of the screen
+"L" = "copy-move view-bottom"           # bottom of the screen
+"M" = "copy-move view-middle"           # middle of the screen
+"N" = "search down"                     # next match below
+"V" = "copy-select line"                # select lines
+"W" = "copy-move big-word-forward"      # next WORD
+"0" = "copy-move line-start"            # start of line
+"Home" = "copy-move line-start"         # start of line
+"$" = "copy-move line-end"              # end of line
+"End" = "copy-move line-end"            # end of line
+"^" = "copy-move first-non-blank"       # first non-blank
+"PageDown" = "copy-move page-down"      # page down
+"Ctrl f" = "copy-move page-down"        # page down
+"PageUp" = "copy-move page-up"          # page up
+"Ctrl b" = "copy-move page-up"          # page up
+"Ctrl d" = "copy-move half-page-down"   # half page down
+"Ctrl u" = "copy-move half-page-up"     # half page up
+"Ctrl v" = "copy-select block"          # select a block
+"q" = "mode locked"                     # back to locked
+"[" = "mode locked"                     # back to locked
+"esc" = "mode locked"                   # back to locked
+"Ctrl c" = "mode locked"                # back to locked
+leader = "mode locked"                  # back to locked
+"/" = "mode enter-search"               # search
+"?" = "mode enter-search"               # search

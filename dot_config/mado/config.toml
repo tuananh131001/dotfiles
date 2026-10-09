@@ -1,0 +1,54 @@
+# Mado's config. Every key is optional and an unknown key is an error.
+# Each line below is the default; uncomment one to change it.
+# Documented in crates/mado-core/src/config.rs (`Config`).
+
+# --- Look ---
+font_family = "GeistMono Nerd Font Mono"               # from Ghostty; default "IosevkaTerm Nerd Font Mono"
+font_size_tiers = [                      # from Ghostty's font-size = 13, on every display
+  { min_width = 0.0, size = 13.0 },
+]
+# font_size_tiers = [                    # default: by screen width in points, first match wins
+#   { min_width = 2560.0, size = 20.0 },
+#   { min_width = 1920.0, size = 18.0 },
+#   { min_width = 0.0, size = 15.0 },
+# ]
+# ui_font_size = 13.0                    # tab names; unset: in step with the terminal font
+theme = "monokai_classic"                # from Ghostty (themes/monokai_classic.toml); default "chiroptera_dark_hard"
+# padding = [2.0, 0.0]                   # [horizontal, vertical] in points
+# pane_frames = true                     # each pane a rounded card with its title
+# status_bar = true                      # tabs in the title bar; false: the window's title
+# clock_label = ""                       # e.g. "JST"; empty: no clock
+# clock_utc_offset = 9.0
+
+# --- Input ---
+option_as_alt = "both"                   # from Ghostty's macos-option-as-alt = true; default "left"
+# shift_enter = "\u001b\r"               # ESC CR, the newline Claude Code accepts; "": encode normally
+# copy_on_select = true
+# keymap = "~/.config/mado/keymap.toml"  # "": the built-in map only
+# which_key_delay_ms = 250               # negative: never
+# hint_alphabet = "asdfghjkl"            # pane hints and quick select labels, best first
+
+# --- Sessions ---
+# session = "main"                       # the first window's session
+# command = []                           # what a new session runs; []: your login shell
+# passthrough = ["zellij", "tmux"]       # programs that get every key
+# resurrect = false                      # rebuild sessions when the app has to start the daemon
+# confirm_close = true                   # ⌘W and ⌘⌥W ask before closing a program...
+# close_quietly = ["zsh", "bash", "fish", "sh", "dash", "nu", "ksh", "tcsh", "csh"]  # ...not one of these
+# scrollback_editor = []                 # ⌘⇧E's and ⌘,'s editor; []: $EDITOR, else nvim
+
+# --- Projects (⌘O, mado open) ---
+# project_roots = ["~/work", "~/src", "~/projects", "~/workspace", "~/code", "~/tools", "~/dotfiles"]
+# project_zoxide = true
+
+# [quick_select]                         # your own patterns, tried before the built-in ones
+# ticket = "\\b[A-Z]+-\\d+\\b"
+
+# Templates replace the built-in set (code / run / git / agent); first match wins.
+# [[template]]
+# marker = "Cargo.toml"
+# tabs = [
+#   { name = "code", focus = true, panes = [{ command = ["nvim", "."] }] },
+#   { name = "run", panes = [{ name = "build" }, { name = "test" }] },
+#   { name = "git", panes = [{ command = ["lazygit"] }] },
+# ]
