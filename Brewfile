@@ -23,4 +23,4 @@ brew "fzf"
 # Cash Apps
 cask "tinycast"
 cask "font-geist-mono-nerd-font"
-cash "shottr"
+cask "shottr"
