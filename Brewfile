@@ -20,7 +20,14 @@ brew "bottom"
 brew "mpv"
 brew "fzf"
 
+brew "hunk"
+
+# Airpods Control
+brew "blueutil"
+brew "switchaudio-osx"
+
 # Cash Apps
 cask "tinycast"
 cask "font-geist-mono-nerd-font"
 cask "shottr"
+cask "hammerspoon"
