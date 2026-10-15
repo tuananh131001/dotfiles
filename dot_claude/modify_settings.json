@@ -1,0 +1,8 @@
+#!/bin/sh
+input="$(cat)"
+[ -z "$input" ] && input='{}'
+if command -v jaq >/dev/null 2>&1; then
+  printf '%s' "$input" | jaq '.statusLine = {"type": "command", "command": "bash ~/.claude/statusline-command.sh"}'
+else
+  printf '%s\n' "$input"
+fi

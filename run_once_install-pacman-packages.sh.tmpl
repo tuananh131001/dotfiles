@@ -1,7 +1,7 @@
 {{ if eq .chezmoi.os "linux" -}}
   #!/bin/bash
 
-  sudo pacman -S --needed git github-cli chezmoi neovim tmux ripgrep 7zip tree-sitter-cli zoxide skim mise btop
+  sudo pacman -S --needed git github-cli chezmoi neovim tmux ripgrep 7zip tree-sitter-cli zoxide skim mise bottom jq jaq sops fish bitwarden-cli fzf mpv ttf-geist-mono-nerd
   yay -S sesh-bin
 
   echo "Core CLI packages installed."
