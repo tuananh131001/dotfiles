@@ -4,5 +4,6 @@ input="$(cat)"
 if command -v jaq >/dev/null 2>&1; then
   printf '%s' "$input" | jaq '.statusLine = {"type": "command", "command": "bash ~/.claude/statusline-command.sh"}'
 else
+  echo "modify_settings.json: jaq not found, statusLine not set" >&2
   printf '%s\n' "$input"
 fi
