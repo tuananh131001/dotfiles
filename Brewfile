@@ -19,6 +19,7 @@ brew "sesh"
 brew "bottom"
 brew "mpv"
 brew "fzf"
+brew "jaq" # use this for claude statusline
 
 brew "hunk"
 
