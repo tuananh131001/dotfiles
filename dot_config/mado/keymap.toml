@@ -83,7 +83,7 @@
 #   quit
 
 preset = "none"
-leader-key = "Ctrl g"
+leader-key = "Ctrl a"
 
 # Every mode. A mode's own bind of the same key wins.
 [global]
