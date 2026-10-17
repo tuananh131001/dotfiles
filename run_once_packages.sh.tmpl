@@ -43,3 +43,18 @@ else
  curl https://getcroc.com | bash
 fi
 
+export PATH="$HOME/.local/bin:$PATH"
+
+if command -v bob >/dev/null 2>&1; then
+  echo "bob is installed. Skipping..."
+else
+  curl -fsSL https://raw.githubusercontent.com/MordechaiHadad/bob/master/scripts/install.sh | bash
+fi
+
+if command -v bob >/dev/null 2>&1; then
+  echo "Installing latest stable Neovim via bob..."
+  bob use stable
+else
+  echo "bob installation failed; skipping Neovim install."
+fi
+
