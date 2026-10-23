@@ -16,6 +16,7 @@ font_size_tiers = [                      # from Ghostty's font-size = 13, on eve
 theme = "monokai_classic"                # from Ghostty (themes/monokai_classic.toml); default "chiroptera_dark_hard"
 # padding = [2.0, 0.0]                   # [horizontal, vertical] in points
 # pane_frames = true                     # each pane a rounded card with its title
+progress_color = "#66d9ef"               # Monokai's blue; default "": the card's frame colour
 # status_bar = true                      # tabs in the title bar; false: the window's title
 # clock_label = ""                       # e.g. "JST"; empty: no clock
 # clock_utc_offset = 9.0

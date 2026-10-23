@@ -8,3 +8,4 @@ go = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = ["ruby"]
+auto_update = true
