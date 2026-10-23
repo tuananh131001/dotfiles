@@ -1,6 +1,3 @@
-# Tap
-tap "abue-ammar/tinycast", trusted: true
-
 # CLI tools
 brew "gh"
 brew "jq"
@@ -29,7 +26,6 @@ brew "blueutil"
 brew "switchaudio-osx"
 
 # Cash Apps
-cask "tinycast"
 cask "font-geist-mono-nerd-font"
 cask "shottr"
 cask "hammerspoon"
