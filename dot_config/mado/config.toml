@@ -13,11 +13,12 @@ font_size_tiers = [                      # from Ghostty's font-size = 13, on eve
 #   { min_width = 0.0, size = 15.0 },
 # ]
 # ui_font_size = 13.0                    # tab names; unset: in step with the terminal font
-theme = "monokai_classic"                # from Ghostty (themes/monokai_classic.toml); default "chiroptera_dark_hard"
+theme = "TokyoNight-CB"             # TokyoNight + [remap] of Claude Code's daltonized diff rows (protan); was "TokyoNight"
 # padding = [2.0, 0.0]                   # [horizontal, vertical] in points
 # pane_frames = true                     # each pane a rounded card with its title
 progress_color = "#66d9ef"               # Monokai's blue; default "": the card's frame colour
 # status_bar = true                      # tabs in the title bar; false: the window's title
+sidebar = true                           # new windows open with the Agents sidebar (⌘B shows or hides it); default false
 # clock_label = ""                       # e.g. "JST"; empty: no clock
 # clock_utc_offset = 9.0
 

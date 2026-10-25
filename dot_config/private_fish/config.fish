@@ -34,7 +34,7 @@ alias ssh_teamlike_1_prod='ssh -i ~/.ssh/teamlike_aws_ec2 -o ProxyCommand="aws s
       --parameters portNumber=%p --region ap-northeast-1 --profile teamlikeprod" anh.nt@i-0a5d7ac47695f65f4'
 alias deep50='mpv https://www.youtube.com/watch?v=YdEk_oLsIec'
 alias deep25='mpv https://www.youtube.com/watch?v=l15BFT7RTEk'
-
+alias ae-update='claude plugin marketplace update agent-expert; and claude plugin update agent-expert@agent-expert'
 
 # pnpm
 set -gx PNPM_HOME "/Users/anh.nt/Library/pnpm"

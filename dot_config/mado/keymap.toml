@@ -94,6 +94,7 @@ leader-key = "Ctrl a"
 "Cmd t" = ["new-tab", "mode locked"]          # new tab
 "Cmd w" = ["close-pane", "mode locked"]       # close pane
 "Cmd A" = "agents"                            # every agent, to jump to
+"Cmd b" = "toggle-sidebar"
 "Cmd G" = ["new-pane --floating --name agents -- agents-pick", "mode locked"]  # agents-pick: jump, preview, close
 "Cmd C" = "quick-select"                      # quick select: copy a URL, path, hash
 "Cmd D" = ["new-pane down", "mode locked"]    # new pane below
@@ -427,3 +428,10 @@ leader = "mode locked"    # back to locked
 leader = "mode locked"                  # back to locked
 "/" = "mode enter-search"               # search
 "?" = "mode enter-search"               # search
+"s" = "mode flash"                      # flash: jump to a label
+
+# FLASH. Other keys type what to look for; a label jumps there, Enter to the nearest one.
+[flash]
+"esc" = "mode copy"                     # back to copy mode
+"Ctrl c" = "mode copy"                  # back to copy mode
+leader = "mode copy"                    # back to copy mode
