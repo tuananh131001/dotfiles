@@ -29,6 +29,14 @@ jobs:
           cp -a "$GITHUB_WORKSPACE" /home/tester/.local/share/chezmoi
           chown -R tester:tester /home/tester
 
+      - name: Authenticate private agent-expert repo
+        env:
+          AGENT_EXPERT_TOKEN: ${{ secrets.AGENT_EXPERT_TOKEN }}
+        run: |
+          repo=https://github.com/tuananh131001/agent-expert
+          sudo -iu tester git config --global \
+            "url.https://x-access-token:${AGENT_EXPERT_TOKEN}@github.com/tuananh131001/agent-expert.insteadOf" "$repo"
+
       - name: chezmoi apply
         # `yes` answers pacman's confirmation prompt; FORCE=1 skips the
         # starship installer's /dev/tty prompt (no tty in CI).
