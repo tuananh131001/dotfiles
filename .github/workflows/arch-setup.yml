@@ -1,0 +1,46 @@
+name: Arch setup
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Only one run per branch; a new push cancels the in-flight one.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    steps:
+      - name: Bootstrap base system
+        run: |
+          pacman -Syu --noconfirm --needed base-devel git sudo chezmoi curl
+          useradd -m -s /bin/bash tester
+          echo 'tester ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/tester
+
+      - uses: actions/checkout@v7
+
+      - name: Stage chezmoi source for test user
+        run: |
+          mkdir -p /home/tester/.local/share
+          cp -a "$GITHUB_WORKSPACE" /home/tester/.local/share/chezmoi
+          chown -R tester:tester /home/tester
+
+      - name: chezmoi apply
+        # `yes` answers pacman's confirmation prompt; FORCE=1 skips the
+        # starship installer's /dev/tty prompt (no tty in CI).
+        run: sudo -iu tester bash -c 'yes | FORCE=1 chezmoi init --apply --verbose'
+
+      - name: Check installed tools
+        run: |
+          sudo -iu tester bash -c '
+            set -e
+            export PATH="$HOME/.local/bin:$PATH"
+            for bin in git gh nvim rg zoxide sk mise jq fish fzf starship; do
+              command -v "$bin"
+            done
+            test -d ~/.config/nvim
+          '
