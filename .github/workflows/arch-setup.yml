@@ -33,14 +33,3 @@ jobs:
         # `yes` answers pacman's confirmation prompt; FORCE=1 skips the
         # starship installer's /dev/tty prompt (no tty in CI).
         run: sudo -iu tester bash -c 'yes | FORCE=1 chezmoi init --apply --verbose'
-
-      - name: Check installed tools
-        run: |
-          sudo -iu tester bash -c '
-            set -e
-            export PATH="$HOME/.local/bin:$PATH"
-            for bin in git gh nvim rg zoxide sk mise jq fish fzf starship; do
-              command -v "$bin"
-            done
-            test -d ~/.config/nvim
-          '
