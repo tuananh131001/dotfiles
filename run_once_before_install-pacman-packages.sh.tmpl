@@ -1,7 +1,8 @@
 {{ if eq .chezmoi.os "linux" -}}
   #!/bin/bash
+  set -e
 
-  sudo pacman -S --needed git github-cli chezmoi neovim ripgrep 7zip tree-sitter-cli zoxide skim mise bottom jq jaq sops fish bitwarden-cli fzf mpv ttf-geist-mono-nerd
+  sudo pacman -S --needed git github-cli chezmoi neovim ripgrep 7zip tree-sitter-cli zoxide skim mise bottom jq jaq sops fish bitwarden-cli fzf mpv otf-geist-mono-nerd
 
   echo "Core CLI packages installed."
   echo "Desktop packages (terminal/gui/input) are opt-in: ~/.local/bin/install-desktop-packages.sh all"
