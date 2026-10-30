@@ -1,2 +1,6 @@
 .local/bin/zccinfo
 .config/ccstatusline
+.config/aerospace
+.config/keyd
+.config/neru
+.config/skhd

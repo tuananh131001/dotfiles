@@ -1,0 +1,18 @@
+id = "local.link-hints"
+name = "Link Hints"
+version = "0.1.0"
+min_herdr_version = "0.9.0"
+description = "Label visible URLs and open one by pressing its letter"
+platforms = ["macos", "linux"]
+
+[[actions]]
+id = "open"
+title = "Hint links in focused pane"
+contexts = ["workspace"]
+command = ["luajit", "link_hints.lua", "open"]
+
+[[panes]]
+id = "picker"
+title = "Link hints"
+placement = "overlay"
+command = ["luajit", "link_hints.lua", "picker"]

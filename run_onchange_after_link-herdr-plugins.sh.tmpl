@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Register local herdr plugins kept in ~/.config/herdr/plugins.
+# Re-runs when the manifest changes: {{ include "dot_config/herdr/plugins/link-hints/herdr-plugin.toml" | sha256sum }}
+set -euo pipefail
+command -v herdr >/dev/null || exit 0
+herdr plugin list --json | grep -q '"plugin_id":"local.link-hints"' ||
+  herdr plugin link "$HOME/.config/herdr/plugins/link-hints"

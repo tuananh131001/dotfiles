@@ -168,6 +168,13 @@ type = "shell"
 command = "~/.config/herdr/navigate.sh right"
 description = "Focus pane right (vim-aware)"
 
+# flash.nvim-style link hints: label visible URLs, press a label to open it.
+[[keys.command]]
+key = "prefix+y"
+type = "shell"
+command = "herdr plugin action invoke open --plugin local.link-hints"
+description = "Link hints: label & open URLs"
+
 # [[keys.command]]
 # key = "prefix+alt+g"
 # type = "popup"
