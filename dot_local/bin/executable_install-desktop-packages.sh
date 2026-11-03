@@ -56,4 +56,4 @@ packages=$(echo "$packages" | tr ' ' '\n' | sed '/^$/d' | sort -u | tr '\n' ' ')
 
 echo "Installing:$packages"
 # shellcheck disable=SC2086
-sudo pacman -S --needed $packages
+sudo pacman -Syu --needed $packages
