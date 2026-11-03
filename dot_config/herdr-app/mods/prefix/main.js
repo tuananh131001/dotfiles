@@ -58,14 +58,6 @@ export default class Prefix extends View {
           if (term) hc(["keys", term, "ctrl+a"]);
           return;
         }
-        // e: open the focused terminal's screen and history in nvim, in a new tab.
-        if (e.key === "e" && !m.shift) {
-          const term = focused()?.terminal;
-          if (!term) return;
-          const f = `\${TMPDIR:-/tmp}/herdr-scrollback-${term}.txt`;
-          run("tab.new", { name: "scrollback", argv: ["sh", "-c", `hc read ${term} > "${f}"; nvim + "${f}"; rm -f "${f}"`] });
-          return;
-        }
         if (/^[1-9]$/.test(e.key) && !m.control && !m.alt && !m.platform) {
           run("tab.select", { index: Number(e.key) });
           return;
@@ -81,6 +73,6 @@ export default class Prefix extends View {
       .text_size(12)
       .text_color(t.muted)
       .child(div().text_color(t.accent).font_semibold().child("PREFIX"))
-      .child("c tab · | - split · hjkl move · x close · z zoom · e scrollback · o go · esc");
+      .child("c tab · | - split · hjkl move · x close · z zoom · o go · esc");
   }
 }
