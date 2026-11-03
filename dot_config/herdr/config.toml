@@ -20,7 +20,12 @@ name = "tokyo-night"
 
 # Override individual color tokens on top of the base theme.
 # Accepts: hex (#rrggbb), named colors, rgb(r,g,b), or panel_bg = "reset"
-# [theme.custom]
+# Protan-friendly (Okabe-Ito) agent status colors
+[theme.custom]
+red = "#D55E00"     # blocked
+yellow = "#F0E442"  # working
+green = "#56B4E9"   # done
+blue = "#0072B2"    # idle
 # sidebar_bg = "#181825"
 # active_row_bg = "#1e1e2e"
 # selection_bg = "#313244"
@@ -305,7 +310,7 @@ description = "Link hints: label & open URLs"
 
 # Agent status indicators: "dots" preserves the compact color marks; "symbols" uses
 # distinct static glyphs for blocked, working, done, idle, and unknown states.
-# status_indicators = "dots"
+status_indicators = "symbols"
 
 # Accent color for highlights, borders, and navigation UI.
 # Accepts: hex (#89b4fa), named colors (cyan, blue, magenta), or rgb(r,g,b)
