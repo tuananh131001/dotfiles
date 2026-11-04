@@ -1,5 +1,6 @@
 {
   "global": {
+    "ctrl-a": "mod.open:personal-prefix",
     "cmd-q": "app.quit",
     "cmd-h": "app.hide",
     "cmd-alt-h": "app.hide_others",
@@ -56,12 +57,20 @@
     "ctrl-6": "space.select:6",
     "ctrl-7": "space.select:7",
     "ctrl-8": "space.select:8",
-    "ctrl-9": "space.select:9",
-    "ctrl-a": "mod.open:prefix",
-    "ctrl-h": "mod.open:nav-left",
-    "ctrl-j": "mod.open:nav-down",
-    "ctrl-k": "mod.open:nav-up",
-    "ctrl-l": "mod.open:nav-right"
+    "ctrl-9": "space.select:9"
+  },
+  "mod:personal-prefix": {
+    "ctrl-a": "personal-prefix.send-prefix"
+  },
+  "mod:personal-corner": {
+    "ctrl-a": "personal-navigation.prefix"
+  },
+  "layout:personal": {
+    "ctrl-a": "personal-navigation.prefix",
+    "ctrl-h": "personal-navigation.h",
+    "ctrl-j": "personal-navigation.j",
+    "ctrl-k": "personal-navigation.k",
+    "ctrl-l": "personal-navigation.l"
   },
   "terminal": {
     "cmd-c": "terminal.copy",
@@ -72,11 +81,6 @@
     "alt-backspace": "send:\u0017",
     "cmd-left": "send:\u0001",
     "cmd-right": "send:\u0005",
-    "cmd-backspace": "send:\u0015",
-    "ctrl-a": "mod.open:prefix",
-    "ctrl-h": "mod.open:nav-left",
-    "ctrl-j": "mod.open:nav-down",
-    "ctrl-k": "mod.open:nav-up",
-    "ctrl-l": "mod.open:nav-right"
+    "cmd-backspace": "send:\u0015"
   }
 }

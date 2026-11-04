@@ -4,3 +4,8 @@
 .config/keyd
 .config/neru
 .config/skhd
+.config/herdr-app/mods/nav-down
+.config/herdr-app/mods/nav-left
+.config/herdr-app/mods/nav-right
+.config/herdr-app/mods/nav-up
+.config/herdr-app/mods/prefix

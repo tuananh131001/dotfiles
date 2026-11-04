@@ -4,6 +4,13 @@
     "enabled": false
   },
   "minimum_contrast": 1,
+  "appearance": "dark",
   "theme": "tokyo-night",
+  "colors": {
+    "blocked": "#D55E00",
+    "working": "#F0E442",
+    "done": "#56B4E9",
+    "idle": "#0072B2"
+  },
   "telemetry": false
 }
