@@ -6,9 +6,13 @@
 -- SSH sessions (saved machine / `herdr --remote`): herdr runs plugins on the
 -- selected server's host, so install luajit there, copy this directory over and
 -- link it (`herdr plugin link <abs path>` on the host, or
--- `herdr --machine <label> plugin link <abs path>` from the client). On a remote
--- host the chosen URL is copied to the local clipboard via OSC 52 instead of
--- being opened.
+-- `herdr --machine <label> plugin link <abs path>` from the client).
+-- On a remote host the URL is sent to 127.0.0.1:<open_port>, which the SSH
+-- connection reverse-forwards to the Mac's opener socket:
+--   Host my_*
+--     RemoteForward 127.0.0.1:47391 /Users/<you>/.cache/link-hints-open.sock
+-- (served by launchd agent dev.link-hints.opener -> opener.sh). If that port
+-- isn't reachable, the URL is copied to the local clipboard via OSC 52 instead.
 
 local M = {}
 
@@ -17,7 +21,8 @@ M.defaults = {
   open_cmd = nil, -- nil = `open` on macOS, `xdg-open` elsewhere
   auto_open_single = false,
   no_links_message = "No links were found",
-  remote = nil, -- nil = auto-detect; true = always copy via OSC 52; false = always open locally
+  remote = nil, -- nil = auto-detect; true = treat as remote; false = always open locally
+  open_port = 47391, -- remote: reverse-forwarded opener port; false = copy only
 }
 
 local HERDR = os.getenv("HERDR_BIN_PATH") or "herdr"
@@ -241,11 +246,25 @@ function M.notify(body)
     .. " --sound none >/dev/null 2>&1")
 end
 
+-- Hands the URL to the client's opener through the SSH reverse forward.
+-- Returns true when the forwarded port accepted it.
+function M.send_remote(cfg, url)
+  local port = tonumber(cfg.open_port)
+  if not port then return false end
+  local cmd = "bash -c 'exec 3<>/dev/tcp/127.0.0.1/$1 && printf \"%s\\n\" \"$2\" >&3' _ "
+    .. port .. " " .. quote(url) .. " >/dev/null 2>&1"
+  local r = os.execute(cmd)
+  return r == true or r == 0
+end
+
 function M.open_url(cfg, url)
   if url:sub(1, 4) == "www." then url = "https://" .. url end
   if M.is_remote(cfg) then
-    -- Must run inside the picker pane so the sequence reaches the client's tty.
+    -- Always copy too: ssh accepts the forwarded connection even when the
+    -- client-side opener is down, so a "successful" send isn't proof.
+    -- OSC 52 must run inside the picker pane to reach the client's tty.
     M.osc52(url)
+    if M.send_remote(cfg, url) then return M.notify("Opened " .. url) end
     return M.notify("Copied " .. url)
   end
   os.execute(cfg.open_cmd .. " " .. quote(url) .. " >/dev/null 2>&1")
