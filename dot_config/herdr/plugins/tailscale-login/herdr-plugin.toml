@@ -1,0 +1,22 @@
+id = "local.tailscale-login"
+name = "Tailscale Login"
+version = "0.1.0"
+min_herdr_version = "0.9.0"
+description = "Open the Tailscale login page in the browser when tailscaled needs login (e.g. after sleep)"
+platforms = ["macos"]
+
+# Make sure the launchd watcher is installed and running whenever herdr starts.
+[[startup]]
+command = ["bash", "tailscale-login.sh", "ensure-agent"]
+
+[[actions]]
+id = "login"
+title = "Tailscale: log in now (open browser)"
+contexts = ["workspace"]
+command = ["bash", "tailscale-login.sh", "login"]
+
+[[actions]]
+id = "status"
+title = "Tailscale: show login status"
+contexts = ["workspace"]
+command = ["bash", "tailscale-login.sh", "status"]
