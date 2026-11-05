@@ -2,6 +2,13 @@
 --   luajit link_hints.lua open    -- plugin action: pick target pane, open picker overlay
 --   luajit link_hints.lua picker  -- overlay entrypoint: draw labels, read keys, open URL
 -- Required without arguments it returns the module table (for headless tests).
+--
+-- SSH sessions (saved machine / `herdr --remote`): herdr runs plugins on the
+-- selected server's host, so install luajit there, copy this directory over and
+-- link it (`herdr plugin link <abs path>` on the host, or
+-- `herdr --machine <label> plugin link <abs path>` from the client). On a remote
+-- host the chosen URL is copied to the local clipboard via OSC 52 instead of
+-- being opened.
 
 local M = {}
 
@@ -10,6 +17,7 @@ M.defaults = {
   open_cmd = nil, -- nil = `open` on macOS, `xdg-open` elsewhere
   auto_open_single = false,
   no_links_message = "No links were found",
+  remote = nil, -- nil = auto-detect; true = always copy via OSC 52; false = always open locally
 }
 
 local HERDR = os.getenv("HERDR_BIN_PATH") or "herdr"
@@ -39,10 +47,49 @@ function M.load_config()
       for k, v in pairs(user) do cfg[k] = v end
     end
   end
+  cfg._os = sh("uname -s"):match("[^\n]+") or ""
   if not cfg.open_cmd then
-    cfg.open_cmd = sh("uname -s"):match("Darwin") and "open" or "xdg-open"
+    cfg.open_cmd = cfg._os == "Darwin" and "open" or "xdg-open"
   end
   return cfg
+end
+
+-- True when the plugin runs on a host whose browser the user can't see.
+function M.is_remote(cfg, getenv)
+  getenv = getenv or os.getenv
+  if cfg.remote ~= nil then return cfg.remote and true or false end
+  local function set(name)
+    local v = getenv(name)
+    return v ~= nil and v ~= ""
+  end
+  if set("SSH_CONNECTION") or set("SSH_CLIENT") or set("SSH_TTY") then return true end
+  if cfg._os ~= "Darwin" and not set("DISPLAY") and not set("WAYLAND_DISPLAY") then return true end
+  return false
+end
+
+-- Clipboard over OSC 52 ----------------------------------------------------
+
+local B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+
+function M.base64(s)
+  local out = {}
+  for i = 1, #s, 3 do
+    local a, b, c = s:byte(i, i + 2)
+    local n = a * 65536 + (b or 0) * 256 + (c or 0)
+    local c1 = math.floor(n / 262144) % 64
+    local c2 = math.floor(n / 4096) % 64
+    local c3 = math.floor(n / 64) % 64
+    local c4 = n % 64
+    out[#out + 1] = B64:sub(c1 + 1, c1 + 1) .. B64:sub(c2 + 1, c2 + 1)
+      .. (b and B64:sub(c3 + 1, c3 + 1) or "=")
+      .. (c and B64:sub(c4 + 1, c4 + 1) or "=")
+  end
+  return table.concat(out)
+end
+
+function M.osc52(text)
+  io.write("\27]52;c;" .. M.base64(text) .. "\7")
+  io.flush()
 end
 
 -- Display width ------------------------------------------------------------
@@ -196,6 +243,11 @@ end
 
 function M.open_url(cfg, url)
   if url:sub(1, 4) == "www." then url = "https://" .. url end
+  if M.is_remote(cfg) then
+    -- Must run inside the picker pane so the sequence reaches the client's tty.
+    M.osc52(url)
+    return M.notify("Copied " .. url)
+  end
   os.execute(cfg.open_cmd .. " " .. quote(url) .. " >/dev/null 2>&1")
 end
 
@@ -257,6 +309,9 @@ function M.picker(cfg)
   local hints = M.scan(lines)
   -- Bail out before drawing anything so the overlay never flashes.
   if #hints == 0 then return M.notify(cfg.no_links_message) end
+  if #hints == 1 and os.getenv("LINK_HINTS_AUTO") then
+    return M.open_url(cfg, hints[1].url)
+  end
   local labels = M.assign_labels(#hints, cfg.labels)
   for i, h in ipairs(hints) do h.label = labels[i] end
 
@@ -276,11 +331,14 @@ function M.open(cfg)
   local hints = M.scan(M.read_pane(target))
   -- No overlay is opened when nothing matches, so the screen stays untouched.
   if #hints == 0 then return M.notify(cfg.no_links_message) end
-  if #hints == 1 and cfg.auto_open_single then
+  local auto = #hints == 1 and cfg.auto_open_single
+  -- Remotely the URL goes out via OSC 52, which needs the picker pane's tty.
+  if auto and not M.is_remote(cfg) then
     return M.open_url(cfg, hints[1].url)
   end
   os.execute(HERDR .. " plugin pane open --plugin " .. quote(PLUGIN_ID)
-    .. " --entrypoint picker --placement overlay --env " .. quote("LINK_HINTS_TARGET=" .. target) .. " --focus >/dev/null")
+    .. " --entrypoint picker --placement overlay --env " .. quote("LINK_HINTS_TARGET=" .. target)
+    .. (auto and " --env LINK_HINTS_AUTO=1" or "") .. " --focus >/dev/null")
 end
 
 local mode = arg and arg[1]
