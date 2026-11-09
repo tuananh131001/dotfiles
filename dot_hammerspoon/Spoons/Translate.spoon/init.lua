@@ -73,6 +73,9 @@ local LANGUAGES = {
 }
 
 local task = nil
+local chooserModal = nil
+local chooserAlert = nil
+local chooserTimer = nil
 local webview = nil
 local closeHotkey = nil
 local progress = nil
@@ -357,6 +360,67 @@ function obj:translateText(direction, text)
   return self
 end
 
+--- Translate.chooseTimeout
+--- Variable
+--- Seconds to wait for 1 or 2 after the choose hotkey before cancelling.
+obj.chooseTimeout = 5
+
+local function exitChooser()
+  if chooserTimer then
+    chooserTimer:stop()
+    chooserTimer = nil
+  end
+  if chooserAlert then
+    hs.alert.closeSpecific(chooserAlert)
+    chooserAlert = nil
+  end
+  if chooserModal then
+    chooserModal:exit()
+    chooserModal:delete()
+    chooserModal = nil
+  end
+end
+
+--- Translate:chooseAndTranslate()
+--- Method
+--- Copy the current selection, then ask for the direction:
+--- press 1 for Japanese → English, 2 for English → Japanese, Esc to cancel.
+---
+--- Returns:
+---  * The Translate object
+function obj:chooseAndTranslate()
+  exitChooser()
+
+  if task and task:isRunning() then
+    fail("a translation is already running")
+    return self
+  end
+
+  local text = getSelection()
+  if not text or text:match("^%s*$") then
+    fail("no text selected")
+    return self
+  end
+
+  chooserModal = hs.hotkey.modal.new()
+  local function pick(direction)
+    return function()
+      exitChooser()
+      self:translateText(direction, text)
+    end
+  end
+  chooserModal:bind({}, "1", pick("ja2en"))
+  chooserModal:bind({}, "2", pick("en2ja"))
+  chooserModal:bind({}, "pad1", pick("ja2en"))
+  chooserModal:bind({}, "pad2", pick("en2ja"))
+  chooserModal:bind({}, "escape", exitChooser)
+  chooserModal:enter()
+
+  chooserAlert = hs.alert.show("Translate:  1 = JA → EN    2 = EN → JA    Esc = cancel", obj.chooseTimeout)
+  chooserTimer = hs.timer.doAfter(obj.chooseTimeout, exitChooser)
+  return self
+end
+
 --- Translate:polish()
 --- Method
 --- Polish the current selection to improve grammar, clarity, and style.
@@ -411,6 +475,7 @@ end
 ---  * mapping - a table containing hotkey objifier/key details for the following items:
 ---    * ja2en - translate the selection from Japanese to English
 ---    * en2ja - translate the selection from English to Japanese
+---    * choose - ask for the direction (1 = JA → EN, 2 = EN → JA), then translate the selection
 ---    * polish - polish the current selection to improve grammar and clarity
 ---
 --- Returns:
@@ -419,6 +484,7 @@ function obj:bindHotkeys(mapping)
   hs.spoons.bindHotkeysToSpec({
     ja2en = function() self:translate("ja2en") end,
     en2ja = function() self:translate("en2ja") end,
+    choose = function() self:chooseAndTranslate() end,
     polish = function() self:polish() end,
   }, mapping)
   return self

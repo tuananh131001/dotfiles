@@ -18,7 +18,6 @@ hs.alert.show("Hammerspoon loaded")
 
 hs.loadSpoon("Translate")
 spoon.Translate:bindHotkeys({
-    ja2en  = { { "alt", "shift" }, "d" },
-    en2ja  = { { "alt", "shift" }, "e" },
+    choose = { { "alt", "shift" }, "d" },
     polish = { { "alt", "shift" }, "g" },
 })
