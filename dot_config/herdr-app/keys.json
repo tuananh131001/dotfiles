@@ -82,5 +82,11 @@
     "cmd-left": "send:\u0001",
     "cmd-right": "send:\u0005",
     "cmd-backspace": "send:\u0015"
+  },
+  "layout:asgard": {
+    "ctrl-h": "personal-navigation.h",
+    "ctrl-j": "personal-navigation.j",
+    "ctrl-k": "personal-navigation.k",
+    "ctrl-l": "personal-navigation.l"
   }
 }
