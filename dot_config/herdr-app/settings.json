@@ -1,7 +1,7 @@
 {
   "zoom": 1.1,
   "sounds": {
-    "enabled": true,
+    "enabled": false,
     "done": "sounds/thor-done.mp3",
     "blocked": "sounds/thor-blocked.mp3"
   },
