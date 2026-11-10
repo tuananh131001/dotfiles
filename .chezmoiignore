@@ -9,3 +9,6 @@
 {{ if ne .chezmoi.os "darwin" -}}
 Library
 {{ end -}}
+
+.DS_Store
+**/.DS_Store
