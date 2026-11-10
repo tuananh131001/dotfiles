@@ -1,9 +1,0 @@
-{{ if eq .chezmoi.os "darwin" -}}
-#!/usr/bin/env bash
-# (Re)load the link-hints URL opener agent used by remote herdr machines.
-# Re-runs when the plist changes: {{ include "private_Library/LaunchAgents/dev.link-hints.opener.plist.tmpl" | sha256sum }}
-set -euo pipefail
-plist="$HOME/Library/LaunchAgents/dev.link-hints.opener.plist"
-launchctl bootout "gui/$(id -u)/dev.link-hints.opener" 2>/dev/null || true
-launchctl bootstrap "gui/$(id -u)" "$plist"
-{{ end -}}
