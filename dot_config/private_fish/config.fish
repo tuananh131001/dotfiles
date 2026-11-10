@@ -52,9 +52,6 @@ fish_add_path /Users/anh.nt/Projects/swat/google-cloud-sdk/bin
 # Pi
 fish_add_path "/Users/anh.nt/.local/share/mise/installs/node/22.22.2/bin"
 
-# opencode
-fish_add_path /Users/anh.nt/.opencode/bin
-
 # Homebrew auto-update
 set -x HOMEBREW_NO_AUTO_UPDATE 1
 

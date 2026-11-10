@@ -9,3 +9,7 @@
 .config/herdr-app/mods/nav-right
 .config/herdr-app/mods/nav-up
 .config/herdr-app/mods/prefix
+.config/mado
+.config/hypr
+.config/albert
+.config/.DS_Store
