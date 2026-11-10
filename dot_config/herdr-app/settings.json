@@ -1,16 +1,19 @@
 {
-  "zoom": 1,
+  "zoom": 1.1,
   "sounds": {
-    "enabled": false
+    "enabled": true,
+    "done": "sounds/thor-done.mp3",
+    "blocked": "sounds/thor-blocked.mp3"
   },
-  "minimum_contrast": 1,
+  "font_ligatures": false,
+  "telemetry": false,
+  "minimum_contrast": 1.0,
   "appearance": "dark",
-  "theme": "tokyo-night",
+  "theme": "thor",
   "colors": {
     "blocked": "#D55E00",
-    "working": "#F0E442",
     "done": "#56B4E9",
-    "idle": "#0072B2"
-  },
-  "telemetry": false
+    "idle": "#0072B2",
+    "working": "#F0E442"
+  }
 }
