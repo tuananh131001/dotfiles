@@ -168,6 +168,17 @@
         }
       ],
       "resizable": false
+    },
+    {
+      "id": "personal-navigation",
+      "type": "block",
+      "content": {
+        "mod": "personal-navigation"
+      },
+      "size": {
+        "px": 1
+      },
+      "resizable": false
     }
   ],
   "background": {
