@@ -70,6 +70,7 @@ local SESSION_ID = hs.host.uuid()
 local LANGUAGES = {
   ja2en = { from = "Japanese", to = "English", label = "JA → EN" },
   en2ja = { from = "English", to = "Japanese", label = "EN → JA" },
+  auto2vi = { from = nil, to = "Vietnamese (Tiếng Việt)", label = "Auto → VI" },
 }
 
 local task = nil
@@ -304,7 +305,7 @@ end
 --- Translate the current selection.
 ---
 --- Parameters:
----  * direction - either "ja2en" or "en2ja"
+---  * direction - "ja2en", "en2ja" or "auto2vi"
 ---
 --- Returns:
 ---  * The Translate object
@@ -333,7 +334,7 @@ end
 --- Translate a given string, without touching the current selection.
 ---
 --- Parameters:
----  * direction - either "ja2en" or "en2ja"
+---  * direction - "ja2en", "en2ja" or "auto2vi"
 ---  * text - the string to translate
 ---
 --- Returns:
@@ -350,11 +351,18 @@ function obj:translateText(direction, text)
     return self
   end
 
-  local systemPrompt = string.format(
-    "You are a translation engine. Translate the user message from %s to %s. "
-      .. "Preserve the original formatting, line breaks and any code or markup verbatim. "
-      .. "Output ONLY the translation, with no commentary, no explanation and no surrounding quotes.",
-    lang.from, lang.to)
+  local instruction
+  if lang.from then
+    instruction = string.format("Translate the user message from %s to %s. ", lang.from, lang.to)
+  else
+    instruction = string.format(
+      "The user message may be written in any language (Japanese, Chinese, English, etc.). "
+        .. "Translate it into %s. Your output MUST be written in %s, never in the source language "
+        .. "or any other language. ", lang.to, lang.to)
+  end
+  local systemPrompt = "You are a translation engine. " .. instruction
+    .. "Preserve the original formatting, line breaks and any code or markup verbatim. "
+    .. "Output ONLY the translation, with no commentary, no explanation and no surrounding quotes."
 
   complete(lang.label .. " translating…", lang.label, systemPrompt, text)
   return self
@@ -362,7 +370,7 @@ end
 
 --- Translate.chooseTimeout
 --- Variable
---- Seconds to wait for 1 or 2 after the choose hotkey before cancelling.
+--- Seconds to wait for 1, 2 or 3 after the choose hotkey before cancelling.
 obj.chooseTimeout = 5
 
 local function exitChooser()
@@ -384,7 +392,8 @@ end
 --- Translate:chooseAndTranslate()
 --- Method
 --- Copy the current selection, then ask for the direction:
---- press 1 for Japanese → English, 2 for English → Japanese, Esc to cancel.
+--- press 1 for Japanese → English, 2 for English → Japanese,
+--- 3 for auto-detect → Vietnamese, Esc to cancel.
 ---
 --- Returns:
 ---  * The Translate object
@@ -413,10 +422,12 @@ function obj:chooseAndTranslate()
   chooserModal:bind({}, "2", pick("en2ja"))
   chooserModal:bind({}, "pad1", pick("ja2en"))
   chooserModal:bind({}, "pad2", pick("en2ja"))
+  chooserModal:bind({}, "3", pick("auto2vi"))
+  chooserModal:bind({}, "pad3", pick("auto2vi"))
   chooserModal:bind({}, "escape", exitChooser)
   chooserModal:enter()
 
-  chooserAlert = hs.alert.show("Translate:  1 = JA → EN    2 = EN → JA    Esc = cancel", obj.chooseTimeout)
+  chooserAlert = hs.alert.show("Translate:  1 = JA → EN    2 = EN → JA    3 = Auto → VI    Esc = cancel", obj.chooseTimeout)
   chooserTimer = hs.timer.doAfter(obj.chooseTimeout, exitChooser)
   return self
 end
@@ -475,7 +486,8 @@ end
 ---  * mapping - a table containing hotkey objifier/key details for the following items:
 ---    * ja2en - translate the selection from Japanese to English
 ---    * en2ja - translate the selection from English to Japanese
----    * choose - ask for the direction (1 = JA → EN, 2 = EN → JA), then translate the selection
+---    * auto2vi - translate the selection from any language (auto-detected) to Vietnamese
+---    * choose - ask for the direction (1 = JA → EN, 2 = EN → JA, 3 = Auto → VI), then translate the selection
 ---    * polish - polish the current selection to improve grammar and clarity
 ---
 --- Returns:
@@ -484,6 +496,7 @@ function obj:bindHotkeys(mapping)
   hs.spoons.bindHotkeysToSpec({
     ja2en = function() self:translate("ja2en") end,
     en2ja = function() self:translate("en2ja") end,
+    auto2vi = function() self:translate("auto2vi") end,
     choose = function() self:chooseAndTranslate() end,
     polish = function() self:polish() end,
   }, mapping)
