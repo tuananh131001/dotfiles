@@ -1,0 +1,8 @@
+{{ if and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "fedora") -}}
+#!/bin/bash
+# Install the CLI tools Fedora doesn't package, declared for Fedora in
+# ~/.config/mise/config.toml. Only these: the rest (ruby etc.) stay lazy.
+set -euo pipefail
+mise=$(command -v mise || echo "$HOME/.local/bin/mise")
+"$mise" install skim bottom jaq sops yazi bitwarden
+{{ end -}}

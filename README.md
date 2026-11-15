@@ -2,9 +2,16 @@
 
 `sh -c "$(curl -fsLS https://get.chezmoi.io)" -- init --apply tuananh131001`
 
-This installs the core CLI packages only.
+This installs the core CLI packages only. Supported: macOS (brew), Arch (pacman),
+Fedora incl. the KDE Plasma edition (dnf; tools Fedora doesn't package — skim,
+bottom, jaq, sops, yazi, bitwarden-cli — come from mise, and Geist Mono Nerd Font
+is installed into `~/.local/share/fonts`).
 
-### Desktop packages (Arch, opt-in)
+### Desktop packages (Arch / Fedora KDE, opt-in)
+
+On Fedora the `gui` group installs KDE-native apps (filelight, partitionmanager,
+plasma-systemmonitor, dolphin, haruna, vlc) and `terminal` pulls ghostty from the
+`scottames/ghostty` COPR.
 
 GUI apps, the terminal emulator, and the fcitx5 input method are **not** installed
 automatically. Run them yourself after `chezmoi apply`:

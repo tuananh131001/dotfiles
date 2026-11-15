@@ -1,0 +1,20 @@
+[tools]
+python = "3.11"
+ruby = "3.3.5"
+node = "22"
+lua = "5.1"
+zig = "latest"
+go = "latest"
+{{- if and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "fedora") }}
+# Fedora doesn't package these (Arch/macOS get them from pacman/brew).
+skim = "latest"
+bottom = "latest"
+jaq = "latest"
+sops = "latest"
+yazi = "latest"
+bitwarden = "latest"
+{{- end }}
+
+[settings]
+idiomatic_version_file_enable_tools = ["ruby"]
+auto_update = true

@@ -1,0 +1,25 @@
+{{ if and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "fedora") -}}
+#!/bin/bash
+# Fedora (incl. the KDE Plasma edition): core CLI packages.
+# skim, bottom, jaq, sops, yazi and bitwarden-cli aren't in Fedora's repos;
+# mise installs them (see ~/.config/mise/config.toml and the
+# install-mise-fedora-tools after-script).
+set -euo pipefail
+
+sudo dnf install git gh chezmoi neovim ripgrep 7zip tree-sitter-cli zoxide jq fish fzf mpv curl unzip fontconfig
+
+# Geist Mono Nerd Font (Arch: otf-geist-mono-nerd) isn't packaged for Fedora.
+font_dir="$HOME/.local/share/fonts/GeistMonoNerdFont"
+if [ ! -d "$font_dir" ]; then
+  tmp=$(mktemp -d)
+  curl -fsSL -o "$tmp/GeistMono.zip" \
+    https://github.com/ryanoasis/nerd-fonts/releases/latest/download/GeistMono.zip
+  mkdir -p "$font_dir"
+  unzip -oq "$tmp/GeistMono.zip" '*.otf' -d "$font_dir"
+  rm -rf "$tmp"
+  fc-cache -f "$font_dir" >/dev/null
+fi
+
+echo "Core CLI packages installed."
+echo "Desktop packages (terminal/gui/input) are opt-in: ~/.local/bin/install-desktop-packages.sh all"
+{{ end -}}

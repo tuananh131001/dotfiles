@@ -1,0 +1,51 @@
+name: Fedora setup
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    container: fedora:latest
+    steps:
+      - name: Bootstrap base system
+        run: |
+          dnf install -y git sudo chezmoi curl
+          useradd -m -s /bin/bash tester
+          echo 'tester ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/tester
+
+      - uses: actions/checkout@v7
+
+      - name: Stage chezmoi source for test user
+        run: |
+          mkdir -p /home/tester/.local/share
+          cp -a "$GITHUB_WORKSPACE" /home/tester/.local/share/chezmoi
+          chown -R tester:tester /home/tester
+
+      - name: Authenticate private agent-expert repo
+        env:
+          AGENT_EXPERT_TOKEN: ${{ secrets.AGENT_EXPERT_TOKEN }}
+        run: |
+          repo=https://github.com/tuananh131001/agent-expert
+          sudo -iu tester git config --global \
+            "url.https://x-access-token:${AGENT_EXPERT_TOKEN}@github.com/tuananh131001/agent-expert.insteadOf" "$repo"
+
+      - name: chezmoi apply
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        # `yes` answers dnf's prompt; FORCE=1 skips starship's /dev/tty prompt.
+        # GITHUB_TOKEN keeps mise's GitHub release lookups under the rate limit.
+        run: sudo -iu tester env GITHUB_TOKEN="$GITHUB_TOKEN" bash -c 'yes | FORCE=1 chezmoi init --apply --verbose'
+
+      - name: Install desktop packages (KDE apps, ghostty, fcitx5)
+        run: sudo -iu tester bash -c 'yes | ~/.local/bin/install-desktop-packages.sh all'
+
+      - name: Verify
+        run: sudo -iu tester bash /home/tester/.local/share/chezmoi/.github/scripts/verify-fedora.sh --desktop

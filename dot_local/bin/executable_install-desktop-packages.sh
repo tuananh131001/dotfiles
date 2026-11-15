@@ -1,9 +1,24 @@
 #!/bin/bash
 set -euo pipefail
 
-TERMINAL_PKGS="ghostty"
-GUI_PKGS="baobab gnome-disk-utility gnome-system-monitor nautilus showtime vlc"
-INPUT_PKGS="fcitx5 fcitx5-unikey kcm-fcitx5"
+if command -v pacman >/dev/null 2>&1; then
+  PM=pacman
+  TERMINAL_PKGS="ghostty"
+  GUI_PKGS="baobab gnome-disk-utility gnome-system-monitor nautilus showtime vlc"
+  INPUT_PKGS="fcitx5 fcitx5-unikey kcm-fcitx5"
+elif command -v dnf >/dev/null 2>&1; then
+  # Fedora KDE Plasma: KDE-native counterparts of the Arch GNOME apps
+  # (baobab→filelight, disks→partitionmanager, nautilus→dolphin, showtime→haruna).
+  PM=dnf
+  TERMINAL_PKGS="ghostty" # from the scottames/ghostty COPR
+  GUI_PKGS="filelight kde-partitionmanager plasma-systemmonitor dolphin haruna vlc"
+  # fcitx5-configtool: standalone config UI, in case kcm-fcitx5 is uninstallable
+  # (Fedora 45: built against libPlasma.so.7, repo ships .so.8).
+  INPUT_PKGS="fcitx5 fcitx5-unikey kcm-fcitx5 fcitx5-configtool"
+else
+  echo "Neither pacman nor dnf found; only Arch and Fedora are supported." >&2
+  exit 0
+fi
 
 usage() {
   cat <<EOF
@@ -21,11 +36,6 @@ Examples:
   $(basename "$0") all
 EOF
 }
-
-if ! command -v pacman >/dev/null 2>&1; then
-  echo "pacman not found; this script only supports Arch-based systems." >&2
-  exit 0
-fi
 
 if [ "$#" -eq 0 ]; then
   usage
@@ -55,5 +65,27 @@ done
 packages=$(echo "$packages" | tr ' ' '\n' | sed '/^$/d' | sort -u | tr '\n' ' ')
 
 echo "Installing:$packages"
-# shellcheck disable=SC2086
-sudo pacman -Syu --needed $packages
+case "$PM" in
+  pacman)
+    # shellcheck disable=SC2086
+    sudo pacman -Syu --needed $packages
+    ;;
+  dnf)
+    if [[ " $packages " == *" ghostty "* ]]; then
+      sudo dnf install -y 'dnf-command(copr)'
+      sudo dnf copr enable -y scottames/ghostty
+    fi
+    # --skip-broken: one package with a dependency bug in the Fedora repos
+    # (see kcm-fcitx5 above) shouldn't block the rest of the group.
+    # shellcheck disable=SC2086
+    sudo dnf install --skip-broken $packages
+    # shellcheck disable=SC2086
+    missing=$(rpm -q $packages | sed -n 's/^package \(.*\) is not installed$/\1/p' | tr '\n' ' ' || true)
+    if [ -n "$missing" ]; then
+      echo "WARNING: skipped (broken in Fedora repos right now): $missing" >&2
+    fi
+    if [[ " $packages " == *" fcitx5 "* ]]; then
+      echo "fcitx5: on Plasma Wayland pick 'Fcitx 5' in System Settings → Keyboard → Virtual Keyboard, then log out and back in."
+    fi
+    ;;
+esac
