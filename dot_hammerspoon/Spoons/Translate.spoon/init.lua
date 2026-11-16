@@ -1,7 +1,8 @@
 --- === Translate ===
 ---
 --- Translate the current selection between Japanese and English using
---- DeepSeek V4 Flash on the OpenCode Go gateway.
+--- DeepSeek V4.1 Flash on OpenCode Zen (default) or OpenCode Go.
+--- Pick the gateway with `spoon.Translate.provider = "zen"` or `"go"`.
 ---
 --- The translation is shown in a popup and copied to the clipboard.
 ---
@@ -11,20 +12,32 @@ local obj = {}
 obj.__index = obj
 
 obj.name = "Translate"
-obj.version = "2.0"
+obj.version = "2.1"
 obj.author = "anh.nt <anh.nt@raksul.com>"
 obj.homepage = "https://github.com/anhnt/spoon-translate"
 obj.license = "MIT - https://opensource.org/licenses/MIT"
 
+--- Translate.provider
+--- Variable
+--- Which OpenCode gateway to use: "zen" (pay-as-you-go, billed from the
+--- workspace balance) or "go" (needs an active OpenCode Go subscription).
+obj.provider = "zen"
+
+--- Translate.model
+--- Variable
+--- Model ID to request. When nil, the provider's default model is used.
+obj.model = nil
+
 --- Translate.baseUrl
 --- Variable
---- Base URL of the OpenCode Go gateway.
-obj.baseUrl = "https://opencode.ai/inference/go/v1"
+--- Override the provider's base URL. When nil, the provider's default is used.
+obj.baseUrl = nil
 
 --- Translate.apiKey
 --- Variable
---- OpenCode Go API key. When nil, the key is read from the macOS Keychain item
---- with service name `opencode-go`.
+--- OpenCode API key. When nil, the key is read from the macOS Keychain: first
+--- the provider's own item (`opencode-zen` or `opencode-go`), then the other one,
+--- since a workspace key works on both gateways.
 obj.apiKey = nil
 
 --- Translate.thinking
@@ -62,10 +75,36 @@ obj.copyDelay = 0.12
 --- Refuse to translate a selection longer than this many characters.
 obj.maxSelectionLength = 20000
 
-local MODEL = "deepseek-v4.1-flash"
 local CURL = "/usr/bin/curl"
-local KEYCHAIN_SERVICE = "opencode-go"
 local SESSION_ID = hs.host.uuid()
+
+-- thinkingToggle: whether the model accepts `thinking = { type = "disabled" }`
+-- (from the `capabilities.reasoning.toggle` field of each gateway's /v1/models).
+local PROVIDERS = {
+  zen = {
+    label = "OpenCode Zen",
+    baseUrl = "https://opencode.ai/inference/v1",
+    model = "deepseek-v4.1-flash",
+    keychain = { "opencode-zen", "opencode-go" },
+    thinkingToggle = true,
+  },
+  go = {
+    label = "OpenCode Go",
+    baseUrl = "https://opencode.ai/inference/go/v1",
+    model = "deepseek-v4.1-flash",
+    keychain = { "opencode-go", "opencode-zen" },
+    thinkingToggle = false,
+  },
+}
+
+local function currentProvider()
+  return PROVIDERS[obj.provider]
+end
+
+local function currentModel()
+  local provider = currentProvider()
+  return obj.model or (provider and provider.model) or "?"
+end
 
 local LANGUAGES = {
   ja2en = { from = "Japanese", to = "English", label = "JA → EN" },
@@ -137,7 +176,7 @@ local function showPopup(title, source, translation, elapsedText)
   <div class="result">%s</div>
   <footer>%s · %s thinking · Copied to clipboard · %s · press Esc to close</footer>
 </body></html>
-]], escapeHtml(title), escapeHtml(source), escapeHtml(translation), escapeHtml(MODEL), escapeHtml(obj.thinking), escapeHtml(elapsedText))
+]], escapeHtml(title), escapeHtml(source), escapeHtml(translation), escapeHtml(currentModel() .. " via " .. currentProvider().label), escapeHtml(obj.thinking), escapeHtml(elapsedText))
 
   webview = hs.webview.new(frame)
     :windowStyle({ "titled", "closable", "utility", "HUD" })
@@ -173,15 +212,16 @@ local function getSelection()
   return nil
 end
 
-local function getApiKey()
+local function getApiKey(provider)
   if obj.apiKey and obj.apiKey ~= "" then
     return obj.apiKey
   end
-  local output, ok = hs.execute("/usr/bin/security find-generic-password -s " .. KEYCHAIN_SERVICE .. " -w 2>/dev/null")
-  if not ok then return nil end
-  local key = trim(output or "")
-  if key == "" then return nil end
-  return key
+  for _, service in ipairs(provider.keychain) do
+    local output, ok = hs.execute("/usr/bin/security find-generic-password -s " .. service .. " -w 2>/dev/null")
+    local key = ok and trim(output or "") or ""
+    if key ~= "" then return key end
+  end
+  return nil
 end
 
 local function curlQuote(s)
@@ -210,9 +250,16 @@ local function complete(progressLabel, title, systemPrompt, text)
     return
   end
 
-  local apiKey = getApiKey()
+  local provider = currentProvider()
+  if not provider then
+    fail("unknown provider: " .. tostring(obj.provider) .. " (use \"zen\" or \"go\")")
+    return
+  end
+  local model = currentModel()
+
+  local apiKey = getApiKey(provider)
   if not apiKey then
-    fail("no API key; run: security add-generic-password -s " .. KEYCHAIN_SERVICE .. " -a $USER -w")
+    fail("no API key; run: security add-generic-password -s " .. provider.keychain[1] .. " -a $USER -w")
     return
   end
 
@@ -220,16 +267,21 @@ local function complete(progressLabel, title, systemPrompt, text)
   progress = hs.alert.show(progressLabel, 3600)
 
   local request = {
-    model = MODEL,
+    model = model,
     messages = {
       { role = "system", content = systemPrompt },
       { role = "user", content = text },
     },
   }
   if obj.thinking == "off" then
-    request.thinking = { type = "disabled" }
+    -- Models without a reasoning toggle reject the `thinking` field; leave it out.
+    if provider.thinkingToggle then
+      request.thinking = { type = "disabled" }
+    end
   else
-    request.thinking = { type = "enabled" }
+    if provider.thinkingToggle then
+      request.thinking = { type = "enabled" }
+    end
     request.reasoning_effort = obj.thinking
   end
   local body = hs.json.encode(request)
@@ -245,7 +297,7 @@ local function complete(progressLabel, title, systemPrompt, text)
     "-H", "Content-Type: application/json",
     "-H", "x-opencode-session: " .. SESSION_ID,
     "-H", "User-Agent: Translate.spoon/" .. obj.version,
-    obj.baseUrl .. "/chat/completions",
+    (obj.baseUrl or provider.baseUrl) .. "/chat/completions",
   }
 
   local startTime = hs.timer.secondsSinceEpoch()
@@ -270,7 +322,7 @@ local function complete(progressLabel, title, systemPrompt, text)
 
     local responseBody, status = (stdout or ""):match("^(.*)\n(%d+)$")
     if not status then
-      fail("unreadable response from gateway")
+      fail("unreadable response from " .. provider.label)
       return
     end
     if status ~= "200" then
@@ -283,7 +335,7 @@ local function complete(progressLabel, title, systemPrompt, text)
     local content = type(choice) == "table" and type(choice.message) == "table" and choice.message.content
     local result = type(content) == "string" and trim(content) or ""
     if result == "" then
-      fail("empty response from " .. MODEL)
+      fail("empty response from " .. model)
       return
     end
 
