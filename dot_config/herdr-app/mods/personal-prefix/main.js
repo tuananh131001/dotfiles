@@ -18,7 +18,7 @@ const GROUPS = [
   { name: 'spaces', items: [
     ['o', 'go to…', 'mod.open', {name: 'picker'}], ['N', 'new space', 'space.new'],
     ['W', 'rename space', 'space.rename'], ['D', 'close space', 'space.close'],
-    ['G', 'worktree', 'mod.open', {name: 'worktree'}],
+    ['G', 'worktree', 'mod.open', {name: 'worktree'}], ['K', 'space board', 'mod.open', {name: 'space-board'}],
   ]},
   { name: 'app', items: [
     ['y', 'link hints', 'mod.open', {name: 'personal-link-hints'}], ['b', 'sidebar', 'layout.toggle', {id: 'sidebar'}],

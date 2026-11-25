@@ -6,19 +6,14 @@
 import { View, div, svg } from "gpui-kit";
 import { v_flex, h_flex, ScrollHandle } from "gpui-base";
 import { spaces, machines, panes, run, openOverlay, exec, hc, theme, shared, setShared, watchFolder, window, layout } from "herdr";
-import { STATUS, STATUSES, NONE_ICON } from "./status.js";
+import { statusList, statusDef, assignments, setStatus, NONE_ICON } from "./status.js";
 
-// Space status (TODO / IN_PROGRESS / DONE), kept in shared "space.status".
-const statuses = () => shared("space.status") ?? {};
-function setStatus(id, status) {
-  const all = { ...statuses() };
-  if (status) all[id] = status; else delete all[id];
-  setShared("space.status", all);
-}
+// Space status (editable list, see status.js), kept in shared "space.status".
+const statuses = assignments;
 const grouping = () => shared("space.groupBy") === "status";
 const foldedSections = () => new Set(shared("space.statusFolded") ?? ["DONE"]);
-// Sections when grouped: in progress, todo, done, then spaces without a status.
-const SECTIONS = ["IN_PROGRESS", "TODO", "DONE", null];
+// Sections when grouped: the statuses in the board's column order (status.js), then spaces without one.
+const sections = () => [...statusList().map((s) => s.id), null];
 
 function find(node, id) {
   if (node?.id === id) return node;
@@ -497,7 +492,7 @@ export default class Spaces extends View {
     });
     const items = [];
     let active = -1;
-    for (const key of SECTIONS) {
+    for (const key of sections()) {
       const mine = fixed.filter(r => (st[r.w.id] ?? null) === key);
       if (!mine.length) continue;
       if (collapsed) {
@@ -512,7 +507,7 @@ export default class Spaces extends View {
   }
 
   section(key, count, folded, t, m) {
-    const S = key ? STATUS[key] : null;
+    const S = statusDef(key);
     const color = S ? S.color : t.dim;
     const target = this.pressed !== null && this.overSec === key && (statuses()[this.pressed] ?? null) !== key;
     return h_flex().id(`sec-${m ?? "local"}-${key ?? "none"}`).h(26).mt(4).flex_none().px(8).gap(7).rounded(6).items_center()
@@ -547,7 +542,7 @@ export default class Spaces extends View {
 
   // The status pill at the row's end; without a status, a faint "set status" button on hover.
   chip(w, status, t) {
-    const S = status ? STATUS[status] : null;
+    const S = statusDef(status);
     return h_flex().id(`status-${w.id}`).flex_none().h(18).px(S ? 6 : 3).gap(4).rounded(9).items_center()
       .text_size(9.5).font_semibold()
       .text_color(S ? S.color : t.dim)
@@ -560,7 +555,7 @@ export default class Spaces extends View {
       .on_mouse_up("left", (_e, cx) => cx.stop_propagation())
       .on_click((_e, cx) => {
         cx.stop_propagation();
-        openOverlay({ mod: "space-status-menu", kind: "popup", width: 200, height: 160, at: "pointer", props: { space: w.id } });
+        openOverlay({ mod: "space-status-menu", kind: "popup", width: 200, height: 48 + 28 * (statusList().length + 1), at: "pointer", props: { space: w.id } });
       })
       .child(svg(S ? S.icon : NONE_ICON).size(11).flex_none())
       .when(Boolean(S), el => el.child(S.label));
@@ -686,8 +681,8 @@ export default class Spaces extends View {
       .when(w.active, (el) => el.bg(t.selected))
       .when(!w.active, (el) => el.hover((s) => s.bg(t.hover)))
       .on_click(() => run("space.select", { id: w.id }))
-      .when(Boolean(statuses()[w.id]), el => el.tooltip(`${w.name} · ${STATUS[statuses()[w.id]].label}`)
-        .child(div().absolute().right(1).bottom(1).size(6).rounded(3).bg(STATUS[statuses()[w.id]].color)))
+      .when(Boolean(statusDef(statuses()[w.id])), el => el.tooltip(`${w.name} · ${statusDef(statuses()[w.id]).label}`)
+        .child(div().absolute().right(1).bottom(1).size(6).rounded(3).bg(statusDef(statuses()[w.id]).color)))
       .child(div().text_color(w.active ? t.foreground : t.muted).when(statuses()[w.id] === "DONE", e => e.opacity(0.55)).child(String(i + 1)))
       .child(div().absolute().right(5).text_color(tone(t, w.status)).child(glyph(w.status))));
   }

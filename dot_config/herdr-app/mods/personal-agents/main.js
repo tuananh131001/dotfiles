@@ -3,7 +3,7 @@
 
 import { View, div, image, svg } from "gpui-kit";
 import { v_flex, h_flex } from "gpui-base";
-import { agents, terminals, panes, focused, spaces, run, theme, shared, setShared, setAgentOrder, openOverlay, closeOverlay, props, window, layout } from "herdr";
+import { nextCommand, agents, terminals, panes, focused, spaces, run, theme, shared, setShared, setAgentOrder, openOverlay, closeOverlay, props, window, layout } from "herdr";
 
 function find(node, id) {
   if (node?.id === id) return node;
@@ -49,8 +49,12 @@ const kidStatus = (k, listed) => {
 const SORTS = [
   { id: "priority", label: "Priority", icon: "clock" },
   { id: "grouped", label: "Grouped by space", icon: "layers" },
+  { id: "machine", label: "Grouped by machine", icon: "server" },
 ];
-const sortOf = () => SORTS.find((s) => s.id === shared("personal-agents.sort")) ?? SORTS[1];
+const SORT_KEY = "personal-agents.sort";
+// An agent on another machine has its name in front of its address (`vps/t7`); null: this computer.
+const machineOf = (a) => (a.address.includes("/") ? a.address.split("/")[0] : null);
+const sortOf = () => SORTS.find((s) => s.id === shared(SORT_KEY)) ?? SORTS[1];
 const SECTION = { 4: "Needs you", 3: "Done", 2: "Working", 1: "Idle" };
 const SECTION_STATUS = { 4: "blocked", 3: "done", 2: "working" };
 
@@ -78,6 +82,15 @@ export default class Agents extends View {
     if (!this.pendingPins.length) localStorage.removeItem("pins");
     this.migratingPins = new Set();
     cx.timer.every(30000, (cx) => cx.notify());
+    // Keys and scripts pick a view: "personal-agents.sort-machine" (or sort-grouped, sort-priority).
+    cx.spawn(async (cx) => {
+      for (;;) {
+        const c = await nextCommand();
+        const s = SORTS.find((s) => c === `sort-${s.id}`);
+        if (s) setShared(SORT_KEY, s.id);
+        cx.notify();
+      }
+    });
   }
 
   // Stamps agents whose state changed. Done and idle count as one: looking at a
@@ -153,7 +166,7 @@ export default class Agents extends View {
         .text_color(t.foreground)
         .hover((el) => el.bg(t.hover))
         .on_click(() => {
-          setShared("personal-agents.sort", s.id);
+          setShared(SORT_KEY, s.id);
           closeOverlay(props().overlay);
         })
         .child(svg(`mods/workspace-chrome/${s.icon}.svg`).size(14).flex_none().text_color(t.muted))
@@ -226,6 +239,9 @@ export default class Agents extends View {
     const urgency = new Map(list.map((a) => [a.address, Math.max(this.rank(a), ...this.tree(all, a.address).map((s) => RANK[kidStatus(s.t, this.listed)] ?? 0))]));
     const rankOf = (a) => urgency.get(a.address);
     if (byPriority) list = [...list].sort((x, y) => rankOf(y) - rankOf(x) || this.since(y) - this.since(x) || y.seq - x.seq);
+    // This computer first, then machines by name; a machine's agents keep their order.
+    const byMachine = sort.id === "machine";
+    if (byMachine) list = [...list].sort((x, y) => (machineOf(x) ?? "").localeCompare(machineOf(y) ?? ""));
     const pinned = list.filter((a) => a.pinned);
     const rest = list.filter((a) => !a.pinned);
     list = [...pinned, ...rest];
@@ -283,7 +299,7 @@ export default class Agents extends View {
       const pic = icon(a.program, 16, t.foreground);
       const more = detail.get(a.address);
       // An agent on another machine (`vps/t7`) says which.
-      const machine = a.address.includes("/") ? a.address.split("/")[0] : null;
+      const machine = machineOf(a);
       if (collapsed) {
         return h_flex()
           .id(`ag-${a.address}`)
@@ -319,7 +335,7 @@ export default class Agents extends View {
         .child(svg(`mods/workspace-chrome/${isPinned ? "pin-off" : "pin"}.svg`).size(13));
       // Under a space header the space goes without saying; an automatic tab number says nothing.
       // Without a space header above (priority, pinned) the row names its space.
-      const full = byPriority || isPinned;
+      const full = byPriority || byMachine || isPinned;
       const name = full ? a.space_name || label(a) : more ?? (/^\d+$/.test(label(a)) ? a.program?.name || label(a) : label(a));
       return h_flex()
         .id(`ag-${a.address}`)
@@ -348,7 +364,7 @@ export default class Agents extends View {
           .child(h_flex().gap(5).items_center()
             .child(this.status(t, a))
             .child(div().truncate().text_color(t.foreground).child(a.space_name || name))
-            .when(Boolean(machine), el => el.child(div().text_size(10).text_color('#CC79A7').child(machine))))
+            .when(Boolean(machine) && !byMachine, el => el.child(div().text_size(10).text_color('#CC79A7').child(machine))))
           .child(div().truncate().text_color(t.foreground).child(a.program?.name || a.app || 'Agent'))
           .child(div().truncate().text_color(t.dim).child(clean(a.title))))
         .when(subs.length > 0, el => el.child(fold(a, subs)))
@@ -356,14 +372,14 @@ export default class Agents extends View {
         .when(this.hovered !== a.address && Boolean(when), el => el.child(div().flex_none().text_size(11).text_color(t.dim).child(duration(now - when))));
     };
 
-    // Groups in list order: spaces (grouped) or priority sections. Agents of a
+    // Groups in list order: spaces (grouped), machines or priority sections. Agents of a
     // space are next to each other in agents(), so neighbours make a group.
     const groups = pinned.length ? [{ id: "pinned", label: "Pinned", status: null, members: pinned }] : [];
     for (const a of rest) {
       const r = rankOf(a) || RANK.idle;
-      const id = byPriority ? `sec-${r}` : `sp-${a.space}`;
+      const id = byPriority ? `sec-${r}` : byMachine ? `m-${machineOf(a) ?? ""}` : `sp-${a.space}`;
       if (groups.at(-1)?.id === id) groups.at(-1).members.push(a);
-      else groups.push({ id, label: byPriority ? SECTION[r] : a.space_name || "", status: byPriority ? SECTION_STATUS[r] : null, members: [a] });
+      else groups.push({ id, label: byPriority ? SECTION[r] : byMachine ? machineOf(a) ?? "This computer" : a.space_name || "", status: byPriority ? SECTION_STATUS[r] : null, members: [a] });
     }
 
     // A group's header; it folds the group. Folded, it says how many and the most urgent state.
@@ -387,7 +403,7 @@ export default class Agents extends View {
           cx.notify();
         })
         .child(div().truncate().text_color(t[g.status] ?? t.dim).child(g.label))
-        .when(byPriority || !open, (el) => el.child(div().text_color(t.dim).child(String(g.members.length))))
+        .when(byPriority || byMachine || !open, (el) => el.child(div().text_color(t.dim).child(String(g.members.length))))
         .child(div().flex_1())
         .when(!open, (el) => el
           .when(!byPriority && top && top !== "idle", (el) => el.child(this.status(t, { status: top }, true)))
@@ -421,7 +437,7 @@ export default class Agents extends View {
                 .text_size(11)
                 .text_color(t.dim)
                 .hover((s) => s.text_color(t.foreground))
-                .on_click(() => openOverlay({ mod: "personal-agents", kind: "popup", width: 200, height: 140, props: { sortMenu: true } }))
+                .on_click(() => openOverlay({ mod: "personal-agents", kind: "popup", width: 200, height: 172, props: { sortMenu: true } }))
                 .tooltip(`Sort agents: ${sort.label}`)
                 .child(svg(`mods/workspace-chrome/${sort.icon}.svg`).size(14)),
             ),
