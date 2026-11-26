@@ -4,7 +4,7 @@ set -euo pipefail
 if command -v pacman >/dev/null 2>&1; then
   PM=pacman
   TERMINAL_PKGS="ghostty"
-  GUI_PKGS="baobab gnome-disk-utility gnome-system-monitor nautilus showtime vlc"
+  GUI_PKGS="baobab gnome-disk-utility gnome-system-monitor nautilus showtime vlc bitwarden"
   INPUT_PKGS="fcitx5 fcitx5-unikey kcm-fcitx5"
 elif command -v dnf >/dev/null 2>&1; then
   # Fedora KDE Plasma: KDE-native counterparts of the Arch GNOME apps
@@ -12,6 +12,8 @@ elif command -v dnf >/dev/null 2>&1; then
   PM=dnf
   TERMINAL_PKGS="ghostty" # from the scottames/ghostty COPR
   GUI_PKGS="filelight kde-partitionmanager plasma-systemmonitor dolphin haruna vlc"
+  # Not in Fedora's repos; installed from Flathub when the gui group is picked.
+  GUI_FLATPAKS="com.bitwarden.desktop"
   # fcitx5-configtool: standalone config UI, in case kcm-fcitx5 is uninstallable
   # (Fedora 45: built against libPlasma.so.7, repo ships .so.8).
   INPUT_PKGS="fcitx5 fcitx5-unikey kcm-fcitx5 fcitx5-configtool"
@@ -26,7 +28,7 @@ Usage: $(basename "$0") <group>...
 
 Groups:
   terminal   $TERMINAL_PKGS
-  gui        $GUI_PKGS
+  gui        $GUI_PKGS${GUI_FLATPAKS:+ $GUI_FLATPAKS (flatpak)}
   input      $INPUT_PKGS
   all        every group above
 
@@ -43,13 +45,14 @@ if [ "$#" -eq 0 ]; then
 fi
 
 packages=""
+flatpaks=""
 
 for group in "$@"; do
   case "$group" in
     terminal) packages="$packages $TERMINAL_PKGS" ;;
-    gui)      packages="$packages $GUI_PKGS" ;;
+    gui)      packages="$packages $GUI_PKGS"; flatpaks="${GUI_FLATPAKS:-}" ;;
     input)    packages="$packages $INPUT_PKGS" ;;
-    all)      packages="$packages $TERMINAL_PKGS $GUI_PKGS $INPUT_PKGS" ;;
+    all)      packages="$packages $TERMINAL_PKGS $GUI_PKGS $INPUT_PKGS"; flatpaks="${GUI_FLATPAKS:-}" ;;
     -h|--help)
       usage
       exit 0
@@ -89,3 +92,13 @@ case "$PM" in
     fi
     ;;
 esac
+
+if [ -n "$flatpaks" ]; then
+  echo "Installing from Flathub: $flatpaks"
+  if ! command -v flatpak >/dev/null 2>&1; then
+    sudo dnf install -y flatpak
+  fi
+  flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+  # shellcheck disable=SC2086
+  flatpak install -y flathub $flatpaks
+fi
