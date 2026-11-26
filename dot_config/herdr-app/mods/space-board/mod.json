@@ -1,0 +1,8 @@
+{
+  "place": "none",
+  "title": "Spaces board",
+  "overlay": { "kind": "dialog", "width": 0.92, "height": 0.86 },
+  "palette": [
+    { "title": "Spaces board", "command": "mod.open", "args": { "name": "space-board" }, "words": "kanban status notes todo" }
+  ]
+}

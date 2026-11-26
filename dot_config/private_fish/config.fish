@@ -7,6 +7,11 @@ __cached_init zoxide init fish
 set -x EDITOR ~/.local/share/bob/nvim-bin/nvim
 set -x VISUAL ~/.local/share/bob/nvim-bin/nvim
 
+# Bitwarden SSH agent (only where its socket exists)
+if test -S $HOME/.bitwarden-ssh-agent.sock
+    set -x SSH_AUTH_SOCK $HOME/.bitwarden-ssh-agent.sock
+end
+
 fish_add_path /usr/local/mysql/bin/
 fish_add_path /Users/anh.nt/.cargo/bin
 fish_add_path ~/.bun/bin
